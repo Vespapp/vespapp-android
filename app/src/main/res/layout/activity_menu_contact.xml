@@ -26,7 +26,7 @@
 
             <TextView
                 android:id="@+id/menu_contact_name"
-                android:text="Nombre"
+                android:text="@string/menu_contact_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -35,12 +35,12 @@
                 android:id="@+id/name_contact"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="tu nombre"
+                android:hint="@string/menu_contact_name_hint"
                 android:inputType="text" />
 
             <TextView
                 android:id="@+id/menu_contact_subject"
-                android:text="Asunto"
+                android:text="@string/menu_contact_subject"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -50,12 +50,12 @@
                 android:id="@+id/subject_contact"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="Asunto"
+                android:hint="@string/menu_contact_subject_hint"
                 android:inputType="text" />
 
             <TextView
                 android:id="@+id/menu_contact_body"
-                android:text="Mensaje"
+                android:text="@string/menu_contact_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -65,12 +65,12 @@
                 android:id="@+id/body_contact"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="Cuerpo del mensaje"
+                android:hint="@string/menu_contact_message_hint"
                 android:inputType="text" />
 
             <TextView
                 android:id="@+id/menu_contact_phone"
-                android:text="Teléfono"
+                android:text="@string/menu_contact_telephone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -80,14 +80,14 @@
                 android:id="@+id/phone_contact"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="(Opcional)"
+                android:hint="@string/menu_contact_telephone_hint"
                 android:inputType="phone" />
 
             <Button
                 android:id="@+id/sendButton_contact"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Enviar"
+                android:text="@string/menu_contact_send"
                 android:layout_gravity="right"
                 android:background="@color/brandSecondary"
                 android:textColor="@color/colorTitle"

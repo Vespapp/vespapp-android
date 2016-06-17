@@ -10,12 +10,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -89,18 +91,20 @@ public class SightingViewActivity extends AppCompatActivity {
 
         TabHost.TabSpec spec = tabs.newTabSpec("PicsTab");
         spec.setContent(R.id.layout_pictures_sighting_tab);
-        spec.setIndicator("Fotos");
+        spec.setIndicator(getString(R.string.sightingview_tabs_photo));
 
         tabs.addTab(spec);
 
         spec = tabs.newTabSpec("MainTab");
         spec.setContent(R.id.layout_info_sighting_tab);
-        spec.setIndicator("Info");
+        spec.setIndicator(getString(R.string.sightingview_tabs_info));
+
         tabs.addTab(spec);
 
         spec = tabs.newTabSpec("MapTab");
         spec.setContent(R.id.map);
-        spec.setIndicator("Mapa");
+        spec.setIndicator(getString(R.string.sightingview_tabs_map));
+
         tabs.addTab(spec);
 
         //Add color initial
@@ -115,6 +119,7 @@ public class SightingViewActivity extends AppCompatActivity {
         }
 
         tabs.setCurrentTab(1);
+        tabs.getTabWidget().getChildAt(1).setBackgroundColor(getResources().getColor(R.color.orange));
 
         tabs.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             public void onTabChanged(String tabId) {
@@ -143,7 +148,7 @@ public class SightingViewActivity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.M)
     private void getInfo() {
         TextView lSource = (TextView) findViewById(R.id.sighting_source_label);
-        lSource.setText("Notificado por:");
+        lSource.setText(R.string.sightingview_notified);
         TextView tSource = (TextView) findViewById(R.id.sighting_source);
         String source = sighting.getSource();
         tSource.setText(source);
@@ -160,55 +165,55 @@ public class SightingViewActivity extends AppCompatActivity {
         }
 
         TextView lLat = (TextView) findViewById(R.id.sighting_lat_label);
-        lLat.setText("Latitud:");
+        lLat.setText(R.string.sightingview_lat);
         TextView tLat = (TextView) findViewById(R.id.sighting_lat);
         tLat.setText(String.valueOf(sighting.getLat()));
 
         TextView lLng = (TextView) findViewById(R.id.sighting_lng_label);
-        lLng.setText("Longitud:");
+        lLng.setText(R.string.sightingview_lon);
         TextView tLng = (TextView) findViewById(R.id.sighting_lng);
         tLng.setText(String.valueOf(sighting.getLng()));
 
         TextView lType = (TextView) findViewById(R.id.sighting_type_label);
-        lType.setText("Tipo:");
+        lType.setText(R.string.sightingview_type);
         TextView tType = (TextView) findViewById(R.id.sighting_type);
         int type = sighting.getType();
         if (type == 1) {
-            tType.setText(String.valueOf("Avispa"));
+            tType.setText(R.string.sightingview_wasp);
         } else if(type == 2){
-            tType.setText(String.valueOf("Nido"));
+            tType.setText(R.string.sightingview_nest);
         }else {
             tType.setText("-");
         }
 
 
         TextView lStatus = (TextView) findViewById(R.id.sighting_status_label);
-        lStatus.setText("Estado:");
+        lStatus.setText(R.string.sightingview_status);
         TextView tStatus = (TextView) findViewById(R.id.sighting_status);
         int status = sighting.getStatus();
         if (status == 0) {
-            tStatus.setText(String.valueOf("Pendiente"));
+            tStatus.setText(R.string.sightingview_status_pending);
             tStatus.setBackgroundColor(getResources().getColor(R.color.statusPending));
         } else if (status == 1) {
-            tStatus.setText(String.valueOf("Procesando"));
+            tStatus.setText(R.string.sightingview_status_processing);
             tStatus.setBackgroundColor(getResources().getColor(R.color.statusProcessing));
         } else if (status == 2) {
-            tStatus.setText(String.valueOf("Procesado"));
+            tStatus.setText(R.string.sightingview_status_validated);
             tStatus.setBackgroundColor(getResources().getColor(R.color.statusValidated));
         }
 
         TextView lResult = (TextView) findViewById(R.id.sighting_result_label);
-        lResult.setText("Resultado:");
+        lResult.setText(R.string.sightingview_result);
         TextView tResult = (TextView) findViewById(R.id.sighting_result);
         Boolean result = sighting.is_valid();
         if (result == null) {
-            tResult.setText(String.valueOf("Desconocido"));
+            tResult.setText(R.string.sightingview_result_unknown);
             tResult.setBackgroundColor(getResources().getColor(R.color.resultUnknown));
         } else if (result == false) {
-            tResult.setText(String.valueOf("Negativo"));
+            tResult.setText(R.string.sightingview_result_negative);
             tResult.setBackgroundColor(getResources().getColor(R.color.resultNo));
         } else if (result == true) {
-            tResult.setText(String.valueOf("Positivo"));
+            tResult.setText(R.string.sightingview_result_positive);
             tResult.setBackgroundColor(getResources().getColor(R.color.resultYes));
         }
 
@@ -220,7 +225,7 @@ public class SightingViewActivity extends AppCompatActivity {
 
 
         TextView lDescription = (TextView) findViewById(R.id.sighting_description_label);
-        lDescription.setText("Descripción:");
+        lDescription.setText(R.string.sightingview_description);
         TextView tDescription = (TextView) findViewById(R.id.sighting_description);
         if(!sighting.getFree_text().isEmpty()){
             tDescription.setText(sighting.getFree_text());
@@ -320,10 +325,15 @@ public class SightingViewActivity extends AppCompatActivity {
             double heightFinal = widthDisplay*0.5;
             int i =  (int) heightFinal;
 
-            bitmap = resizeBitmap(bitmap, widthDisplay, i);
-            imageInfo.setImageBitmap(bitmap);
+            if (bitmap != null) {//ANR
+                bitmap = resizeBitmap(bitmap, widthDisplay, i);
+                imageInfo.setImageBitmap(bitmap);
 
-            ll.addView(imageInfo);
+                ll.addView(imageInfo);
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.bitmap_null_sighting_view, Toast.LENGTH_SHORT).show();
+                Log.e("[SightingViewAct]", "Null bitmap, maybe you are not connected to the Internet");
+            }
 
         } catch (IOException e) {
             e.printStackTrace();

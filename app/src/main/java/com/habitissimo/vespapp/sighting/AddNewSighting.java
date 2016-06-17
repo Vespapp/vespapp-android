@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.habitissimo.vespapp.Constants;
 import com.habitissimo.vespapp.MainActivity;
+import com.habitissimo.vespapp.R;
 import com.habitissimo.vespapp.Vespapp;
 import com.habitissimo.vespapp.api.VespappApi;
 import com.habitissimo.vespapp.api.VespappApiHelper;
@@ -138,16 +139,16 @@ public class AddNewSighting {
     }
 
     private void onSightingCreationError(Throwable t) {
-        Toast.makeText(context, "Error al subir avistamiento", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, R.string.addnewsighting_sighting_creation_error, Toast.LENGTH_SHORT).show();
     }
 
     private void onPhotosUploaded() {
-        Toast.makeText(context, "Fotos subidas", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, R.string.addnewsighting_upload_photos, Toast.LENGTH_SHORT).show();
         hideDialog();
     }
 
     private void onPhotosUploadingError(Throwable t) {
-        Toast.makeText(context, "Error subiendo fotos", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, R.string.addnewsighting_upload_photos_error, Toast.LENGTH_SHORT).show();
         hideDialog();
     }
 

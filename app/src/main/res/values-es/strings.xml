@@ -1,0 +1,120 @@
+<resources>
+    <string name="app_name">Vespapp</string>
+    <string name="btn_add_photo">¡Haz una foto!</string>
+    <string name="btn_select_photo">Seleccionar foto</string>
+    <string name="txt_selFotos">O si ya tienes fotos, ¡añádelas!</string>
+    <string name="confirm_cap_titulo">Añade fotos</string>
+    <string name="confirm_cap_location">Ha sido en...</string>
+    <string name="confirm_cap_map">Mueve el marker</string>
+    <string name="confirm_cap_txt_confirm">La foto es de...</string>
+    <string name="confirm_cap_map_sight">Avistamiento</string>
+    <string name="confirm_cap_questions">Preguntas</string>
+    <string name="nido">Nido</string>
+    <string name="avispa">Avispa</string>
+    <string name="confirm_cap_DeleteDialog_msg">¿Eliminar imagen?</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="add_picture">Haz otra foto</string>
+    <string name="select_picture">Selecciona otra foto</string>
+    <string name="status_pending">Pendiente</string>
+    <string name="status_processed">Tramitado</string>
+    <string name="status_processing">En proceso</string>
+    <string name="status_unsent">No enviada</string>
+    <string name="listo">¡Listo!</string>
+    <string name="s_lo_quedan_unas_preguntas">Sólo quedan unas preguntas</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_info_description">InfoDescription</string>
+    <string name="title_activity_menu_contact">Contacto</string>
+    <string name="title_activity_menu_about_us">Acerca de nosotros</string>
+    <string name="title_activity_menu_contributors">Colaboradores</string>
+    <string name="contributers_tittle">Colaboradores de Vespapp</string>
+
+    <string name="icon_heart">&#xf0f9;</string>
+    <string name="title_activity_menu">MenuActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="about_us_date_1">Octubre de 2015</string>
+    <string name="about_us_title_1">Primera detección de avispa asiática en Mallorca</string>
+    <string name="about_us_body_1">El Laboratorio de Zoología del Departamento de Biología de la Universitat de les Illes Balears confirmó la detección por primera vez de esta avispa en Mallorca, gracias a la colaboración de los apicultores.</string>
+    <string name="about_us_link_1">http://diari.uib.es/arxiu/La-avispa-asiatica-ya-esta-en-Mallorca.cid411005</string>
+
+    <string name="about_us_date_2">Octubre - Noviembre de 2015</string>
+    <string name="about_us_title_2">Localización y retirada del nido</string>
+    <string name="about_us_body_2">El Servei de Protecció d’Espècies de la Conselleria de Medi Ambient, Agricultura i Pesca organiza operativos para la detección del nido de la avispa asiática. El Equipo de control de fauna del COFIB logra retirar con éxito el único nido encontrado en la zona de la Vall de Sóller.</string>
+    <string name="about_us_link_2">http://www.caib.es/pidip/dadesComunicat.do?lang=es&amp;codi=8835160</string>
+
+    <string name="about_us_date_3">Marzo de 2016</string>
+    <string name="about_us_title_3">Maratón informático para diseñar una app contra la avispa asiática</string>
+    <string name="about_us_body_3">La UIB (Laboratorio de Zoología, Escuela Politécnica Superior y Vicerrectorado de Innovación y Transferencia) y Habitissimo organizan un maratón informático para diseñar una app contra la avispa asiática. Primera fase de la creación de Vespapp.</string>
+    <string name="about_us_link_3">http://diari.uib.es/arxiu/La-UIB-y-Habitissimo-organizan-un-maraton.cid432855</string>
+
+    <string name="about_us_date_4">Abril – Mayo de 2016</string>
+    <string name="about_us_title_4">Segunda fase de la creación de Vespapp</string>
+    <string name="about_us_body_4">Un equipo de tres estudiantes de ingeniería informática,becados por Cátedra Santander UIB de Innovación y Transferencia del Conocimiento (CSUIT), llevan a cabo la segunda fase de la creación de Vespapp. Paralelamente el equipo investigador del proyecto (Laboratorio de Zoología, Informática, Sistemas de Información Geográfica (SIG) y Comunicación, participación y redes sociales) trabaja para que Vespapp sea una realidad tangible.</string>
+    <string name="about_us_link_4"></string>
+
+    <string name="about_us_date_5">Mayo de 2016:</string>
+    <string name="about_us_title_5">Presentación de Vespapp</string>
+    <string name="about_us_body_5"></string>
+    <string name="about_us_link_5"></string>
+
+    <string name="menu_contact_name">Nombre</string>
+    <string name="menu_contact_name_hint">"¿Cómo te llamas?"</string>
+    <string name="menu_contact_subject">Asunto</string>
+    <string name="menu_contact_subject_hint">Asunto</string>
+    <string name="menu_contact_message">Mensaje</string>
+    <string name="menu_contact_message_hint">Escribe aquí tu mensaje</string>
+    <string name="menu_contact_telephone">Teléfono</string>
+    <string name="menu_contact_telephone_hint">(Opcional)</string>
+    <string name="menu_contact_send">Enviar</string>
+
+    <string name="activity_new_sighting_map_send">Enviar</string>
+
+    <string name="tab_menu_contact_firstLine">Contacto</string>
+    <string name="tab_menu_contact_secondLine">Contacta con nosotros por correo</string>
+    <string name="tab_menu_about_firstLine">Acerca de</string>
+    <string name="tab_menu_about_secondLine">Conoce nuestra historia</string>
+    <string name="tab_menu_contributors_firstLine">Colaboradores</string>
+    <string name="tab_menu_contributors_secondLine">Ellos lo han hecho posible</string>
+
+    <string name="questions_activity_toast">Gracias por contestar las preguntas</string>
+    <string name="questions_send">Enviar</string>
+
+    <string name="sightingview_tabs_photo">Fotos</string>
+    <string name="sightingview_tabs_info">Info</string>
+    <string name="sightingview_tabs_map">Mapa</string>
+
+    <string name="sightingview_notified">Notificado por:</string>
+    <string name="sightingview_lat">Latitud:</string>
+    <string name="sightingview_lon">Longitud:</string>
+    <string name="sightingview_type">Tipo:</string>
+    <string name="sightingview_wasp">Avispa</string>
+    <string name="sightingview_nest">Nido</string>
+    <string name="sightingview_status">Estado:</string>
+    <string name="sightingview_status_validated">Procesado</string>
+    <string name="sightingview_status_processing">Procesando</string>
+    <string name="sightingview_status_pending">Pendiente</string>
+    <string name="sightingview_result">Resultado:</string>
+    <string name="sightingview_result_positive">Positivo</string>
+    <string name="sightingview_result_negative">Negativo</string>
+    <string name="sightingview_result_unknown">Desconocido</string>
+    <string name="sightingview_description">Descripción</string>
+
+    <string name="newsightingview_marker_title">Mantenme pulsado y arrástrame</string>
+    <string name="newsightingview_dialog_gps">El sistema GPS está desactivado. ¿Desea activarlo?</string>
+    <string name="newsightingview_dialog_yes">Sí</string>
+    <string name="newsightingview_dialog_no">No</string>
+    <string name="newsightingview_toast_gps">Conectando con GPS. Inténtalo de nuevo en unos segundos</string>
+
+    <string name="newsightingdata_cantUpload">No se pueden subir más de 5 imágenes</string>
+
+    <string name="addnewsighting_sighting_creation_error">Error al subir avistamiento</string>
+    <string name="addnewsighting_upload_photos">Fotos subidas</string>
+    <string name="addnewsighting_upload_photos_error">Error subiendo fotos</string>
+
+    <string name="loading_dialog_text">Procesando...</string>
+
+    <string name="bitmap_null_sighting_view">Ha habido un problema al cargar la imagen</string>
+</resources>

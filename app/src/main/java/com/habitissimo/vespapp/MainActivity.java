@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         tabs.getTabWidget().getChildAt(1).setBackgroundColor(getResources().getColor(R.color.brandPrimary));
 
         tabs.setCurrentTab(1);
+        tabs.getTabWidget().getChildAt(1).setBackgroundColor(getResources().getColor(R.color.orange));
 
         tabs.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             public void onTabChanged(String tabId) {
@@ -209,6 +211,23 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(i, PICK_IMAGE_REQUEST);
     }
 
+    private String translateToCatalan(String title_info) {
+        String title = title_info;
+        if (title_info.startsWith("Ficha identificación avispa asiática")) {
+            title = "Fitxa identificació vespa asiàtica";
+        } else if (title_info.startsWith("Ficha identificación nido")) {
+            title = "Fitxa identificació niu";
+        } else if (title_info.startsWith("¡No")) {
+            title = "No l'hem de confondre!";
+        } else if (title_info.startsWith("Biolo")){
+            title = "Biologia";
+        } else if (title_info.startsWith("Impactos")) {
+            title = "Impactes";
+        } else if (title_info.startsWith("Importancia")) {
+            title = "Importància de les abelles";
+        } return title;
+    }
+
     private void getInfo() {
         final VespappApi api = Vespapp.get(this).getApi();
 
@@ -221,8 +240,15 @@ public class MainActivity extends AppCompatActivity {
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                             ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT);
                     params.setMargins(15, 50, 20, 20);
+
+                    String title_info = info.getTitle();
+                    //Si esta en catala, de moment feim parche
+                    if (Locale.getDefault().getLanguage().equals("ca")) {
+                        title_info = translateToCatalan(info.getTitle());
+                    }
+
                     Button btn = new Button(getApplicationContext());
-                    btn.setText(info.getTitle());
+                    btn.setText(title_info);
                     btn.setBackgroundResource(R.drawable.button_selector);
                     btn.setTextSize((int) getResources().getDimension(R.dimen.text_info_button));
                     btn.setLayoutParams(params);

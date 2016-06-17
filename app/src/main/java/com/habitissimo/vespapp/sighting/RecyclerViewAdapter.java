@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.habitissimo.vespapp.Constants;
 import com.habitissimo.vespapp.R;
@@ -53,8 +55,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     @Override
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
         Bitmap img = BitmapFactory.decodeFile(itemList.get(position));
-        img = getResizedBitmap(img, 640);
-        holder.photo.setImageBitmap(img);
+        if (img != null) {//ANR
+            img = getResizedBitmap(img, 640);
+            holder.photo.setImageBitmap(img);
+        } else {
+            Toast.makeText(context, R.string.bitmap_null_sighting_view, Toast.LENGTH_SHORT).show();
+            Log.e("[SightingViewAct]", "Null bitmap, maybe you are not connected to the Internet");
+        }
     }
 
     @Override

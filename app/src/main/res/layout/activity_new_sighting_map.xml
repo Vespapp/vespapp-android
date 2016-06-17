@@ -16,7 +16,7 @@
             android:id="@+id/send_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Enviar"
+            android:text="@string/activity_new_sighting_map_send"
             android:layout_gravity="right"
             android:background="@color/brandSecondary"
             android:textColor="@color/colorTitle"

@@ -33,7 +33,7 @@ public class ContactActivity extends AppCompatActivity {
                 i.putExtra(Intent.EXTRA_SUBJECT, subject.getText().toString());
                 i.putExtra(Intent.EXTRA_TEXT, "Enviado por: " + name.getText().toString() + "\n\nNúmero de teléfono: " + phone.getText().toString() + "\n\nMensaje: " + body.getText().toString());
                 try {
-                    startActivity(Intent.createChooser(i, "Escoje la que quieras..."));
+                    startActivity(Intent.createChooser(i, "Escoge la que quieras..."));
                 } catch (android.content.ActivityNotFoundException ex) {
                     System.out.println("There are no email clients installed");
                 }

@@ -32,7 +32,7 @@
             android:layout_toRightOf="@id/iconMenu1"
             android:ellipsize="marquee"
             android:singleLine="true"
-            android:text="Contacta con nosotros por correo"
+            android:text="@string/tab_menu_contact_secondLine"
             android:textSize="12sp" />
 
         <TextView
@@ -45,7 +45,7 @@
             android:layout_alignWithParentIfMissing="true"
             android:layout_toRightOf="@id/iconMenu1"
             android:gravity="center_vertical"
-            android:text="Contacto"
+            android:text="@string/tab_menu_contact_firstLine"
             android:textSize="16sp" />
     </RelativeLayout>
 
@@ -81,7 +81,7 @@
             android:layout_toRightOf="@id/iconMenu2"
             android:ellipsize="marquee"
             android:singleLine="true"
-            android:text="Conoce nuestra historia"
+            android:text="@string/tab_menu_about_secondLine"
             android:textSize="12sp" />
 
         <TextView
@@ -94,7 +94,7 @@
             android:layout_alignWithParentIfMissing="true"
             android:layout_toRightOf="@id/iconMenu2"
             android:gravity="center_vertical"
-            android:text="Acerca de "
+            android:text="@string/tab_menu_about_firstLine"
             android:textSize="16sp" />
     </RelativeLayout>
 
@@ -130,7 +130,7 @@
             android:layout_toRightOf="@id/iconMenu3"
             android:ellipsize="marquee"
             android:singleLine="true"
-            android:text="Ellos lo han hecho posible"
+            android:text="@string/tab_menu_contributors_secondLine"
             android:textSize="12sp" />
 
         <TextView
@@ -143,7 +143,7 @@
             android:layout_alignWithParentIfMissing="true"
             android:layout_toRightOf="@id/iconMenu3"
             android:gravity="center_vertical"
-            android:text="Colaboradores "
+            android:text="@string/tab_menu_contributors_firstLine"
             android:textSize="16sp" />
     </RelativeLayout>
 

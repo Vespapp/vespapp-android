@@ -10,6 +10,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -106,6 +107,7 @@ public class QuestionsActivity extends AppCompatActivity {
 
         List<Integer> answerList = sighting.getAnswers();
         for (Map.Entry<String, Answer> a : answersMap.entrySet()){
+            Log.d("[QuestionsActivity]", "ID = "+a.getValue().getId() + ", Value = "+a.getValue().getValue());
             Answer answer = a.getValue();
             answerList.add(answer.getId());
         }
@@ -148,7 +150,7 @@ public class QuestionsActivity extends AppCompatActivity {
 
     private static void updateSightingCompleted() {
         //ScreenSlidePageFragment.updateSighting(this, sighting);
-        Toast.makeText(context, "Gracias por contestar las preguntas", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, R.string.questions_activity_toast, Toast.LENGTH_LONG).show();
         goToMainActivity();
     }
 

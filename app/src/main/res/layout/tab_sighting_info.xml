@@ -155,7 +155,8 @@
         android:layout_marginTop="20sp"
         android:textColor="@color/colorPrimaryText"
         android:textStyle="bold"
-        android:textSize="@dimen/info_text"/>
+        android:textSize="@dimen/info_text"
+        />
 
     <TextView
         android:id="@+id/sighting_description"
@@ -164,7 +165,9 @@
         android:layout_gravity="left"
         android:layout_marginLeft="20sp"
         android:textSize="@dimen/info_text"
-        android:textColor="@color/colorPrimaryText"/>
+        android:textColor="@color/colorPrimaryText"
+        android:paddingBottom="20sp"
+        android:paddingRight="15sp"/>
 
     </LinearLayout>
 </ScrollView>

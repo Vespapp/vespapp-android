@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -80,44 +81,48 @@ public class NewSightingMapActivity extends AppCompatActivity implements OnMarke
 
     private void initMap() {
         final GoogleMap Gmap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-        Gmap.setMyLocationEnabled(true);
-        map = new Map(Gmap);
+        if (Gmap != null) {//ANR
+            Gmap.setMyLocationEnabled(true);
+            map = new Map(Gmap);
 
-        LatLng position = new LatLng(sighting.getLat(), sighting.getLng());
+            LatLng position = new LatLng(sighting.getLat(), sighting.getLng());
 
-        marker = Gmap.addMarker(new MarkerOptions()
-                .position(position)
-                .title("Mantenme pulsado y arrástrame")
-                .draggable(true));
+            marker = Gmap.addMarker(new MarkerOptions()
+                    .position(position)
+                    .title(getString(R.string.newsightingview_marker_title))
+                    .draggable(true));
 
-        Gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
+            Gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
 
-        Gmap.setOnMarkerDragListener(this);
+            Gmap.setOnMarkerDragListener(this);
 
-        Gmap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng position) {
-                marker = moveMarker(Gmap, marker, position);
-            }
-        });
-
-
-        Gmap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-            @Override
-            public boolean onMyLocationButtonClick() {
-                LatLng myPosition = getCurrentPosition();
-                if (myPosition != null) {
-                    marker = moveMarker(Gmap, marker, myPosition);
-
-                    CameraPosition camPos = new CameraPosition.Builder().target(myPosition).zoom(14).build();
-                    CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
-
-                    Gmap.animateCamera(camUpd3);
-                    return true;
+            Gmap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                @Override
+                public void onMapLongClick(LatLng position) {
+                    marker = moveMarker(Gmap, marker, position);
                 }
-                return false;
-            }
-        });
+            });
+
+
+            Gmap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                @Override
+                public boolean onMyLocationButtonClick() {
+                    LatLng myPosition = getCurrentPosition();
+                    if (myPosition != null) {
+                        marker = moveMarker(Gmap, marker, myPosition);
+
+                        CameraPosition camPos = new CameraPosition.Builder().target(myPosition).zoom(14).build();
+                        CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
+
+                        Gmap.animateCamera(camUpd3);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+        } else {
+            Log.e("[NewSightingMapActiv]", "Map not ready yet, Gmap = null!");
+        }
     }
 
 
@@ -127,7 +132,7 @@ public class NewSightingMapActivity extends AppCompatActivity implements OnMarke
         }
         marker = Gmap.addMarker(new MarkerOptions()
                 .position(position)
-                .title("Mantenme pulsado y arrástrame")
+                .title(getString(R.string.sightingview_result))
                 .draggable(true)
                 .visible(true));
 
@@ -182,14 +187,14 @@ public class NewSightingMapActivity extends AppCompatActivity implements OnMarke
 
     private void showGPSDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("El sistema GPS está desactivado, ¿Desea activarlo?")
+        builder.setMessage(getString(R.string.newsightingview_dialog_gps))
                 .setCancelable(false)
-                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.newsightingview_dialog_yes), new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.newsightingview_dialog_no), new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
                     }
@@ -200,7 +205,7 @@ public class NewSightingMapActivity extends AppCompatActivity implements OnMarke
 
 
     private void showToastConnectingGPS() {
-        Toast.makeText(this, "Conectando con GPS. Inténtalo de nuevo en unos segundos", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.newsightingview_toast_gps, Toast.LENGTH_SHORT).show();
     }
 
 

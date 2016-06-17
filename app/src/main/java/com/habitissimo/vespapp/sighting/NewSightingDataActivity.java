@@ -193,7 +193,7 @@ public class NewSightingDataActivity extends AppCompatActivity {
         }
 
         if (picturesActions.getList().size() == 5) {
-            Toast.makeText(this, "No se pueden subir más de 5 imágenes", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.newsightingdata_cantUpload, Toast.LENGTH_LONG).show();
         } else {
             picturesActions.getList().add(picturePath);
             Database.get(this).save(Constants.PICTURES_LIST, picturesActions);
