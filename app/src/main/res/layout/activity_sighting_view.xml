@@ -17,6 +17,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/container_tres"
         tools:context="com.habitissimo.vespapp.MainActivity">
 
 
@@ -43,8 +44,8 @@
                 <FrameLayout
                     android:id="@android:id/tabcontent"
                     android:layout_width="match_parent"
-
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    >
 
                     <include layout="@layout/tab_sighting_pictures" />
 
@@ -56,5 +57,11 @@
 
             </LinearLayout>
         </TabHost>
+
+        <com.habitissimo.vespapp.image.TouchImageView
+            android:id="@+id/expanded_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible" />
     </FrameLayout>
 </LinearLayout>

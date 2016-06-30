@@ -1,13 +1,19 @@
 package com.habitissimo.vespapp.sighting;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -16,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
@@ -32,6 +39,7 @@ import com.habitissimo.vespapp.Vespapp;
 import com.habitissimo.vespapp.api.VespappApi;
 import com.habitissimo.vespapp.async.Task;
 import com.habitissimo.vespapp.async.TaskCallback;
+import com.habitissimo.vespapp.image.TouchImageView;
 import com.habitissimo.vespapp.map.Map;
 
 import java.io.IOException;
@@ -54,6 +62,23 @@ public class SightingViewActivity extends AppCompatActivity {
     private Map map;
     private Marker marker;
 
+    // Hold a reference to the current animator,
+    // so that it can be canceled mid-way.
+    private Animator mCurrentAnimator;
+
+    // The system "short" animation time duration, in milliseconds. This
+    // duration is ideal for subtle animations or animations that occur
+    // very frequently.
+    private int mShortAnimationDuration;
+
+    private boolean zoomed;
+
+    private TouchImageView expandedImageView;
+    private float startScaleFinal;
+    private Rect startBounds;
+    private View _thumbView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +94,10 @@ public class SightingViewActivity extends AppCompatActivity {
         getInfo();
         getPictures();
         initMap();
+
+        // Retrieve and cache the system's default "short" animation time.
+        mShortAnimationDuration = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
     }
 
     private void initToolbar() {
@@ -296,7 +325,6 @@ public class SightingViewActivity extends AppCompatActivity {
         return str;
     }
 
-
     private void printPictures(List<Picture> picturesList) {
         for (Picture picture : picturesList) {
             addItemList(picture);
@@ -325,12 +353,21 @@ public class SightingViewActivity extends AppCompatActivity {
             display.getSize(size);
             int widthDisplay = size.x;
             int heightDisplay = size.y;
-            double heightFinal = widthDisplay*0.5;
+            double heightFinal = widthDisplay*0.6;
             int i =  (int) heightFinal;
 
             if (bitmap != null) {//ANR
                 bitmap = resizeBitmap(bitmap, widthDisplay, i);
                 imageInfo.setImageBitmap(bitmap);
+
+                final ImageView finalImageInfo = imageInfo;
+                final Bitmap finalBitmap = bitmap;
+                imageInfo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        zoomImageFromThumb(finalImageInfo, finalBitmap);
+                    }
+                });
 
                 ll.addView(imageInfo);
             } else {
@@ -365,6 +402,7 @@ public class SightingViewActivity extends AppCompatActivity {
         if (permissionCheck_Coarse_Location == PackageManager.PERMISSION_GRANTED &&
                 permissionCheck_Fine_Location == PackageManager.PERMISSION_GRANTED)
             Gmap.setMyLocationEnabled(false);
+
         map = new Map(Gmap);
 
         double lat = sighting.getLat();
@@ -374,5 +412,175 @@ public class SightingViewActivity extends AppCompatActivity {
         LatLng myLocation = new LatLng(lat, lng);
         marker = Gmap.addMarker(new MarkerOptions().position(myLocation));
         map.moveCamera(lat, lng, zoom);
+    }
+
+    private void zoomImageFromThumb(final View thumbView, Bitmap bitmap) {
+        // If there's an animation in progress, cancel it
+        // immediately and proceed with this one.
+        if (mCurrentAnimator != null) {
+            mCurrentAnimator.cancel();
+        }
+
+        // Load the high-resolution "zoomed-in" image.
+//        final TouchImageView expandedImageView = (TouchImageView) findViewById(
+//                R.id.expanded_image);
+
+        expandedImageView = (TouchImageView) findViewById(
+                R.id.expanded_image);
+//        expandedImageView.setImageResource(imageResId);
+        expandedImageView.setImageBitmap(bitmap);
+        expandedImageView.setMaxZoom(4);
+
+        findViewById(R.id.container_tres).setBackgroundColor(Color.BLACK);
+        findViewById(R.id.tabs_sighting_view).setVisibility(View.INVISIBLE);
+
+        // Calculate the starting and ending bounds for the zoomed-in image.
+        // This step involves lots of math. Yay, math.
+
+        startBounds = new Rect();
+        final Rect finalBounds = new Rect();
+        final Point globalOffset = new Point();
+
+        // The start bounds are the global visible rectangle of the thumbnail,
+        // and the final bounds are the global visible rectangle of the container
+        // view. Also set the container view's offset as the origin for the
+        // bounds, since that's the origin for the positioning animation
+        // properties (X, Y).
+        thumbView.getGlobalVisibleRect(startBounds);
+        findViewById(R.id.container_tres)
+                .getGlobalVisibleRect(finalBounds, globalOffset);
+        startBounds.offset(-globalOffset.x, -globalOffset.y);
+        finalBounds.offset(-globalOffset.x, -globalOffset.y);
+
+        // Adjust the start bounds to be the same aspect ratio as the final
+        // bounds using the "center crop" technique. This prevents undesirable
+        // stretching during the animation. Also calculate the start scaling
+        // factor (the end scaling factor is always 1.0).
+        float startScale;
+        if ((float) finalBounds.width() / finalBounds.height()
+                > (float) startBounds.width() / startBounds.height()) {
+            // Extend start bounds horizontally
+            startScale = (float) startBounds.height() / finalBounds.height();
+            float startWidth = startScale * finalBounds.width();
+            float deltaWidth = (startWidth - startBounds.width()) / 2;
+            startBounds.left -= deltaWidth;
+            startBounds.right += deltaWidth;
+        } else {
+            // Extend start bounds vertically
+            startScale = (float) startBounds.width() / finalBounds.width();
+            float startHeight = startScale * finalBounds.height();
+            float deltaHeight = (startHeight - startBounds.height()) / 2;
+            startBounds.top -= deltaHeight;
+            startBounds.bottom += deltaHeight;
+        }
+
+        // Hide the thumbnail and show the zoomed-in view. When the animation
+        // begins, it will position the zoomed-in view in the place of the
+        // thumbnail.
+        thumbView.setAlpha(0f);
+        expandedImageView.setVisibility(View.VISIBLE);
+
+        // Set the pivot point for SCALE_X and SCALE_Y transformations
+        // to the top-left corner of the zoomed-in view (the default
+        // is the center of the view).
+        expandedImageView.setPivotX(0f);
+        expandedImageView.setPivotY(0f);
+
+        // Construct and run the parallel animation of the four translation and
+        // scale properties (X, Y, SCALE_X, and SCALE_Y).
+        AnimatorSet set = new AnimatorSet();
+        set
+                .play(ObjectAnimator.ofFloat(expandedImageView, View.X,
+                        startBounds.left, finalBounds.left))
+                .with(ObjectAnimator.ofFloat(expandedImageView, View.Y,
+                        startBounds.top, finalBounds.top))
+                .with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_X,
+                        startScale, 1f)).with(ObjectAnimator.ofFloat(expandedImageView,
+                View.SCALE_Y, startScale, 1f));
+        set.setDuration(mShortAnimationDuration);
+        set.setInterpolator(new DecelerateInterpolator());
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mCurrentAnimator = null;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                mCurrentAnimator = null;
+            }
+        });
+        set.start();
+        mCurrentAnimator = set;
+
+        zoomed = true;
+
+        _thumbView = thumbView;
+        // Upon clicking the zoomed-in image, it should zoom back down
+        // to the original bounds and show the thumbnail instead of
+        // the expanded image.
+        startScaleFinal = startScale;
+        expandedImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                zoomOut(expandedImageView, startScaleFinal, startBounds, thumbView);
+            }
+        });
+    }
+
+    private void zoomOut(final TouchImageView expandedImageView, float startScaleFinal, Rect startBounds, final View thumbView) {
+        if (mCurrentAnimator != null) {
+            mCurrentAnimator.cancel();
+        }
+
+        // Animate the four positioning/sizing properties in parallel,
+        // back to their original values.
+        AnimatorSet set = new AnimatorSet();
+        set.play(ObjectAnimator
+                .ofFloat(expandedImageView, View.X, startBounds.left))
+                .with(ObjectAnimator
+                        .ofFloat(expandedImageView,
+                                View.Y,startBounds.top))
+                .with(ObjectAnimator
+                        .ofFloat(expandedImageView,
+                                View.SCALE_X, startScaleFinal))
+                .with(ObjectAnimator
+                        .ofFloat(expandedImageView,
+                                View.SCALE_Y, startScaleFinal));
+        set.setDuration(mShortAnimationDuration);
+        set.setInterpolator(new DecelerateInterpolator());
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                thumbView.setAlpha(1f);
+                expandedImageView.setVisibility(View.GONE);
+                mCurrentAnimator = null;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                thumbView.setAlpha(1f);
+                expandedImageView.setVisibility(View.GONE);
+                mCurrentAnimator = null;
+            }
+        });
+        set.start();
+        mCurrentAnimator = set;
+
+        findViewById(R.id.container_tres).setBackgroundResource(R.color.transparent);
+        findViewById(R.id.tabs_sighting_view).setVisibility(View.VISIBLE);
+
+        zoomed = false;
+
+        expandedImageView.resetZoom();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (zoomed) {
+            zoomOut(expandedImageView, startScaleFinal, startBounds, _thumbView);
+        } else {
+            super.onBackPressed();
+        }
     }
 }

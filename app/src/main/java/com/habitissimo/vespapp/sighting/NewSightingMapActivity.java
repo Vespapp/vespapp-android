@@ -176,7 +176,7 @@ public class NewSightingMapActivity extends AppCompatActivity implements OnMarke
                         }
 
                 } else {
-                    Log.d("[MainActivity]","No se ha dado permiso al GPS");
+                    Log.d("[MainActivity]","GPS permission not granted");
                 }
                 return;
             }
@@ -208,6 +208,7 @@ public class NewSightingMapActivity extends AppCompatActivity implements OnMarke
         String locProvider = locManager.getBestProvider(criteria, false);
         Location currentLocation = null;
 
+        //Comprobacion permisos Android 6.0
         if (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) && PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)) {

@@ -21,4 +21,6 @@
     <color name="brandSecondary">#8904B1</color>
     <color name="orange">#FF6716</color>
 
+    <color name="transparent">#80FFFFFF</color>
+
 </resources>

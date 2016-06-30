@@ -56,8 +56,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int CAMERA_PERMISSION = 10;
     private static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 11;
+
     private static final int TAKE_CAPTURE_REQUEST = 0;
     private static final int PICK_IMAGE_REQUEST = 1;
+
     private File photoFile;
     private Map map;
     private Marker marker;
@@ -170,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
                     int permissionCheck_Camera = ContextCompat.checkSelfPermission(getApplicationContext(),
                             Manifest.permission.CAMERA);
                     if (permissionCheck_Camera == PackageManager.PERMISSION_GRANTED) {
-                        Log.d("[MainActivity]", "Tens permís per càmera");
                         takePhoto();
                     }
                     else {
@@ -200,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 } else {
-                    Log.d("[MainActivity]","No se ha dado permiso a la camara");
+                    Log.d("[MainActivity]","Permission to use Camera not granted");
                 }
                 return;
             }
@@ -218,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 } else {
-                    Log.d("[MainActivity]","No se ha dado permiso para escribur ficheros");
+                    Log.d("[MainActivity]","Permission to write to external storage not granted");
                 }
         }
     }
@@ -263,7 +264,6 @@ public class MainActivity extends AppCompatActivity {
         int permissionCheck_WriteExternalStorage = ContextCompat.checkSelfPermission(getApplicationContext(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permissionCheck_WriteExternalStorage == PackageManager.PERMISSION_GRANTED) {
-            Log.d("[MainActivity]", "Tens permís per escriure fitxers");
 
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             photoFile = PicturesActions.createImageFile();
@@ -368,6 +368,7 @@ public class MainActivity extends AppCompatActivity {
 
         final GoogleMap Gmap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
 
+        //Comprobacion permisos para Android 6.0
         int permissionCheck_Coarse_Location = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION);
         int permissionCheck_Fine_Location = ContextCompat.checkSelfPermission(this,
@@ -376,6 +377,7 @@ public class MainActivity extends AppCompatActivity {
         if (permissionCheck_Coarse_Location == PackageManager.PERMISSION_GRANTED &&
                 permissionCheck_Fine_Location == PackageManager.PERMISSION_GRANTED)
             Gmap.setMyLocationEnabled(false);
+
 
         map = new Map(Gmap);
 
