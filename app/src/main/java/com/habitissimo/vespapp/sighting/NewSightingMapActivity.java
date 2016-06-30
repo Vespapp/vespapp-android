@@ -1,13 +1,20 @@
 package com.habitissimo.vespapp.sighting;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -29,16 +36,25 @@ import com.habitissimo.vespapp.R;
 import com.habitissimo.vespapp.dialog.LoadingDialog;
 import com.habitissimo.vespapp.map.Map;
 
+import java.io.IOException;
+
 public class NewSightingMapActivity extends AppCompatActivity implements OnMarkerDragListener {
+
+    private final static int GPS_PERMISSION = 13;
 
     private Map map;
     private Marker marker;
     private Sighting sighting;
 
+    private Activity activity;
+    private GoogleMap _Gmap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_sighting_map);
+
+        activity = this;
 
         initToolbar();
 
@@ -82,7 +98,24 @@ public class NewSightingMapActivity extends AppCompatActivity implements OnMarke
     private void initMap() {
         final GoogleMap Gmap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
         if (Gmap != null) {//ANR
-            Gmap.setMyLocationEnabled(true);
+            _Gmap = Gmap;
+
+            int permissionCheck_Coarse_Location = ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION);
+            int permissionCheck_Fine_Location = ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION);
+
+            if (permissionCheck_Coarse_Location == PackageManager.PERMISSION_GRANTED &&
+                    permissionCheck_Fine_Location == PackageManager.PERMISSION_GRANTED) {
+                Gmap.setMyLocationEnabled(true);
+            }
+            else {
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                        GPS_PERMISSION);
+            }
+
+
             map = new Map(Gmap);
 
             LatLng position = new LatLng(sighting.getLat(), sighting.getLng());
@@ -125,6 +158,32 @@ public class NewSightingMapActivity extends AppCompatActivity implements OnMarke
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case GPS_PERMISSION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                        if (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_COARSE_LOCATION) && PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this,
+                                Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                            if (_Gmap != null)
+                                _Gmap.setMyLocationEnabled(true);
+                        }
+
+                } else {
+                    Log.d("[MainActivity]","No se ha dado permiso al GPS");
+                }
+                return;
+            }
+
+        }
+    }
+
 
     private Marker moveMarker(GoogleMap Gmap, Marker marker, LatLng position) {
         if (marker != null) {
@@ -147,8 +206,14 @@ public class NewSightingMapActivity extends AppCompatActivity implements OnMarke
         // Display my position in the map
         Criteria criteria = new Criteria();
         String locProvider = locManager.getBestProvider(criteria, false);
-        Location currentLocation = locManager.getLastKnownLocation(locProvider);
+        Location currentLocation = null;
 
+        if (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) && PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
+            currentLocation = locManager.getLastKnownLocation(locProvider);
+
+        }
         // getting GPS status
         boolean isGPSEnabled = locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         // getting network status

@@ -20,8 +20,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textSize="@dimen/question_text"
-            android:layout_marginTop="20dip"
-            android:layout_marginBottom="20dip"/>
+            android:textAlignment="center"
+            android:layout_margin="20dip"
+            />
 
     </LinearLayout>
 </ScrollView>

@@ -8,6 +8,8 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/brandPrimary</item>
+        <!--<item name="colorPrimaryDark">@color/brandPrimaryDark</item>-->
+        <!--<item name="colorAccent">@color/colorPrimary</item>-->
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="android:windowBackground">@color/colorBackground</item>

@@ -8,6 +8,7 @@
         android:id="@+id/toolbar_menu_contact"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="4dp"
         android:background="@color/brandPrimary">
     </android.support.v7.widget.Toolbar>
 

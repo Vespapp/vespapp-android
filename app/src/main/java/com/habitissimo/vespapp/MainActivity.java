@@ -1,10 +1,15 @@
 package com.habitissimo.vespapp;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -49,6 +54,8 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int CAMERA_PERMISSION = 10;
+    private static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 11;
     private static final int TAKE_CAPTURE_REQUEST = 0;
     private static final int PICK_IMAGE_REQUEST = 1;
     private File photoFile;
@@ -56,10 +63,14 @@ public class MainActivity extends AppCompatActivity {
     private Marker marker;
     private HashMap<String, Sighting> relation = new HashMap<>();
 
+    private Activity activity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        activity = this;
 
         initTabs();
         initCamBtn();
@@ -92,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         tabs.addTab(spec);
 
         //Add color initial
-        tabs.getTabWidget().getChildAt(1).setBackgroundColor(getResources().getColor(R.color.brandPrimary));
+//        tabs.getTabWidget().getChildAt(1).setBackgroundColor(getResources().getColor(R.color.brandPrimary));
 
         tabs.setCurrentTab(1);
         tabs.getTabWidget().getChildAt(1).setBackgroundColor(getResources().getColor(R.color.orange));
@@ -156,11 +167,60 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    takePhoto();
+                    int permissionCheck_Camera = ContextCompat.checkSelfPermission(getApplicationContext(),
+                            Manifest.permission.CAMERA);
+                    if (permissionCheck_Camera == PackageManager.PERMISSION_GRANTED) {
+                        Log.d("[MainActivity]", "Tens permís per càmera");
+                        takePhoto();
+                    }
+                    else {
+                        ActivityCompat.requestPermissions(activity,
+                                new String[]{Manifest.permission.CAMERA},
+                                CAMERA_PERMISSION);
+                    }
                 } catch (IOException e) {
                 }
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_PERMISSION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    try {
+                        takePhoto();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    Log.d("[MainActivity]","No se ha dado permiso a la camara");
+                }
+                return;
+            }
+            case WRITE_EXTERNAL_STORAGE_PERMISSION:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    try {
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        photoFile = PicturesActions.createImageFile();
+                        savePicturePathToDatabase(photoFile.getAbsolutePath());
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                        startActivityForResult(intent, TAKE_CAPTURE_REQUEST);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    Log.d("[MainActivity]","No se ha dado permiso para escribur ficheros");
+                }
+        }
     }
 
     private void initMenuOptions() {
@@ -199,11 +259,24 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void takePhoto() throws IOException {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        photoFile = PicturesActions.createImageFile();
-        savePicturePathToDatabase(photoFile.getAbsolutePath());
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-        startActivityForResult(intent, TAKE_CAPTURE_REQUEST);
+
+        int permissionCheck_WriteExternalStorage = ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissionCheck_WriteExternalStorage == PackageManager.PERMISSION_GRANTED) {
+            Log.d("[MainActivity]", "Tens permís per escriure fitxers");
+
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            photoFile = PicturesActions.createImageFile();
+            savePicturePathToDatabase(photoFile.getAbsolutePath());
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+            startActivityForResult(intent, TAKE_CAPTURE_REQUEST);
+        }
+        else {
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    WRITE_EXTERNAL_STORAGE_PERMISSION);
+        }
+
     }
 
     public void selectPicture() {
@@ -294,7 +367,16 @@ public class MainActivity extends AppCompatActivity {
         final VespappApi api = Vespapp.get(this).getApi();
 
         final GoogleMap Gmap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-        Gmap.setMyLocationEnabled(false);
+
+        int permissionCheck_Coarse_Location = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION);
+        int permissionCheck_Fine_Location = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+
+        if (permissionCheck_Coarse_Location == PackageManager.PERMISSION_GRANTED &&
+                permissionCheck_Fine_Location == PackageManager.PERMISSION_GRANTED)
+            Gmap.setMyLocationEnabled(false);
+
         map = new Map(Gmap);
 
 

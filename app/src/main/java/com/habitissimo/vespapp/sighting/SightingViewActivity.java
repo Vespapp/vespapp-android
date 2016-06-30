@@ -1,13 +1,16 @@
 package com.habitissimo.vespapp.sighting;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -354,7 +357,14 @@ public class SightingViewActivity extends AppCompatActivity {
 
     private void initMap() {
         final GoogleMap Gmap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-        Gmap.setMyLocationEnabled(true);
+        int permissionCheck_Coarse_Location = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION);
+        int permissionCheck_Fine_Location = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+
+        if (permissionCheck_Coarse_Location == PackageManager.PERMISSION_GRANTED &&
+                permissionCheck_Fine_Location == PackageManager.PERMISSION_GRANTED)
+            Gmap.setMyLocationEnabled(false);
         map = new Map(Gmap);
 
         double lat = sighting.getLat();

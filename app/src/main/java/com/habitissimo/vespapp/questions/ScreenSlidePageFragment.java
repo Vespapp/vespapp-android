@@ -162,7 +162,6 @@ public class ScreenSlidePageFragment extends Fragment {
                 btn_send.setText(R.string.questions_send);
                 btn_send.setBackgroundColor(getResources().getColor(R.color.brandSecondary));
                 btn_send.setTextColor(getContext().getResources().getColor(R.color.colorTitle));
-//                btn_send.setPadding(0, 20, 0, 0);//Separar boton de respuestas
                 btn_send.setGravity(Gravity.CENTER);
 
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
@@ -185,6 +184,7 @@ public class ScreenSlidePageFragment extends Fragment {
 
         } else {
             rootView = (ViewGroup) inflater.inflate(R.layout.fragment_one_answer, container, false);
+            LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.linear_layout);
             RadioGroup rg = (RadioGroup) rootView.findViewById(R.id.radiogroup_one_answer);
 
             //Si esta en catala, feim parche a la espera de canviar WS
@@ -233,6 +233,7 @@ public class ScreenSlidePageFragment extends Fragment {
                 btn_send.setLayoutParams(params);
 
                 rg.addView(btn_send);
+//                ll.addView(btn_send);
 
                 btn_send.setOnClickListener(new View.OnClickListener() {
                     @Override

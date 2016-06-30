@@ -2,6 +2,7 @@ package com.habitissimo.vespapp.questions;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -43,6 +44,7 @@ public class QuestionsActivity extends AppCompatActivity {
 
     private static Sighting sighting;
     private List<Question> questionsList;
+    private List<Question> questionsListUnsorted;
 
     private Toolbar toolbar;
 
@@ -56,7 +58,20 @@ public class QuestionsActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         sighting = (Sighting) i.getSerializableExtra("sightingObject");
-        questionsList = (List<Question>) i.getSerializableExtra("questionsList");
+        questionsListUnsorted = (List<Question>) i.getSerializableExtra("questionsList");
+
+        questionsList = questionsListUnsorted;
+
+        //PARCHEEEEE
+        if (questionsList.get(1).getId() == 9) {
+            questionsList.add(questionsListUnsorted.get(1));
+            questionsList.remove(1);
+        }
+
+//        for (int j = 0; j < questionsList.size(); ++j) {
+//            Log.d("[QuestionsActivity]", "id = "+questionsList.get(j).getId()+", title = "+questionsList.get(j).getTitle());
+//        }
+
         NUM_PAGES = questionsList.size();
 
         List<Integer> listAnswers = new ArrayList<>();
@@ -86,15 +101,16 @@ public class QuestionsActivity extends AppCompatActivity {
         mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                if (position < currentPage) {
-                    mPager.setCurrentItem(currentPage);
-                } else {
+//                if (position < currentPage) {
+//                    mPager.setCurrentItem(currentPage);
+//                } else {
                     currentPage = position;
                     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_questions);
                     TextView progressQuestionText = (TextView) toolbar.findViewById(R.id.progress_text);
                     int pos = position + 1;
                     progressQuestionText.setText(pos + "/" + NUM_PAGES);
-                }
+//                    progressQuestionText.setTextColor(Color.WHITE);
+//                }
 
                 invalidateOptionsMenu();
             }

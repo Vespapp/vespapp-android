@@ -17,6 +17,7 @@
     <color name="resultNo">#d9534f</color>
     
     <color name="brandPrimary">#FD9627</color>
+    <color name="brandPrimaryDark">#F57C00</color>
     <color name="brandSecondary">#8904B1</color>
     <color name="orange">#FF6716</color>
 

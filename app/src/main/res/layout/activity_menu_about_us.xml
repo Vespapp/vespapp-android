@@ -8,6 +8,7 @@
         android:id="@+id/toolbar_menu_about_us"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="4dp"
         android:background="@color/brandPrimary">
 
         <TextView
@@ -16,6 +17,7 @@
             android:layout_height="wrap_content"
             android:paddingRight="20dp"
             android:text="1/4"
+            android:textColor="@color/colorTitle"
             android:layout_gravity="right"
             android:textSize="@dimen/info_text"
             />
