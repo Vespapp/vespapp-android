@@ -55,10 +55,28 @@
     <string name="about_us_body_4">Un equipo de tres estudiantes de ingeniería informática, becados por Cátedra Santander UIB de Innovación y Transferencia del Conocimiento (CSUIT), llevan a cabo la segunda fase de la creación de Vespapp. Paralelamente el equipo investigador del proyecto (Laboratorio de Zoología, Informática, Sistemas de Información Geográfica (SIG) y Comunicación, participación y redes sociales) trabaja para que Vespapp sea una realidad tangible.</string>
     <string name="about_us_link_4"></string>
 
-    <string name="about_us_date_5">Mayo de 2016:</string>
+    <string name="about_us_date_5">Junio de 2016</string>
     <string name="about_us_title_5">Presentación de Vespapp</string>
-    <string name="about_us_body_5"></string>
-    <string name="about_us_link_5"></string>
+    <string name="about_us_body_5">Día 8 de junio se presentó oficialmente el proyecto Vespapp en la Universitat de les Illes Balears, cuyo objetivo es la detección temprana de la avispa asiática. La presentaron:\n\n
+        &#8226; <b>Señor Vicenç Vidal</b>, conseller de Medi Ambient, Agricultura i Pesca del Govern de les Illes Balears\n\n
+        &#8226; <b>Señora Bàrbara Terrassa</b>, jefa de servicio de Recerca i Desenvolupament Tecnològic de la Conselleria d’Innovació, Recerca i Turisme del Govern de les Illes Balears\n\n
+        &#8226; <b>Doctora Mar Leza</b>, del área de Zoología y codirectora del proyecto\n\n
+        &#8226; <b>Doctor Llorenç Huguet</b>, rector de la UIB\n\n
+        &#8226; <b>Señores Jordi Llull</b>, jefe técnico, y <b>Lídia Nicolau</b>, responsable de personas y cultura, de Habitissimo\n\n
+        &#8226; <b>Doctor Bartomeu Alorda</b>, director de la Cátedra Santander-UIB de Innovación y Transferencia\n\n
+        &#8226; <b>Doctor Carlos Guerrero</b>, profesor de la Escuela Politécnica Superior y codirector del proyecto\n\n
+        &#8226; <b>Doctor Miquel Àngel Miranda</b>, profesor de Zoologia del Departamento de Biología de la UIB\n\n
+        &#8226; <b>Doctor Maurici Ruiz</b>, jefe del Servicio de Sistemas de Información Geográfica y Teledetección de la UIB\n\n
+        &#8226; <b>Doctor Jordi Llabrés</b>, vicerrector de Innovación y Transferencia de la UIB\n\n
+        &#8226; <b>Joan Martín</b>, <b>Carlos Tenorio</b> y <b>Camila Pérez</b> estudiantes del grado de Ingeniería Informática de la UIB\n
+    </string>
+    <string name="about_us_link_5">http://diari.uib.es/arxiu/Rueda-informativa-Presentacion-de-la-Vespapp-para.cid445787</string>
+
+    <string name="about_us_date_6">Actualmente</string>
+    <string name="about_us_title_6">¡Viva la ciencia ciudadana!</string>
+    <string name="about_us_body_6">La ciudadanía de las Illes Balears se ha volcado con el proyecto de ciencia ciudadana y gracias a eso cada día estamos más cerca de cumplir nuestro objetivo.\n\n<b>¡Muchas gracias a todos!</b>\n\n¡No olvides seguirnos en las redes sociales!\n\n <b>#EntreTodosEsPosible #STOPVespa #AUPAAbejas</b>\n</string>
+    <string name="about_us_link_6">&#8226; Facebook: https://www.facebook.com/VespApp\n\n&#8226; Twitter: https://twitter.com/vespapp\n
+    </string>
 
     <string name="menu_contact_name">Nombre</string>
     <string name="menu_contact_name_hint">"¿Cómo te llamas?"</string>

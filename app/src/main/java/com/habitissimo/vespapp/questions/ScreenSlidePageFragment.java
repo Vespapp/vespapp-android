@@ -51,61 +51,6 @@ public class ScreenSlidePageFragment extends Fragment {
         position = getArguments().getInt(ARG_POSITION);
     }
 
-    private String translateQuestionToCatalan(String text) {
-        String question = "";
-        if (text.startsWith("¿Dónde la has encontrado?")) {
-            question = "On l'has trobat?";
-        } else if (text.startsWith("¿Estaba")) {
-            question = "Estava...?";
-        } else if (text.startsWith("¿Qué med")) {
-            question = "Què mesurava el niu?";
-        } else if (text.startsWith("¿Dónde estaba el nido")) {
-            question = "On era el niu?";
-        } else if (text.startsWith("¿Había avispas")) {
-            question = "Hi havia vespes al seu voltant?";
-        } else if (text.startsWith("¿Qué hacía")) {
-            question = "Què feia?";
-        } return question;
-    }
-
-    private String translateAnswerToCatalan(String text) {
-        String answer = "";
-        if (text.startsWith("Bosque")) {
-            answer = "Bosc";
-        } else if (text.startsWith("Zona rural")) {
-            answer = "Zona rural";
-        } else if (text.startsWith("Zona urbana")) {
-            answer = "Zona urbana";
-        } else if (text.startsWith("Sola")) {
-            answer = "Tota sola";
-        } else if (text.startsWith("En grupo")) {
-            answer = "En grup";
-        } else if (text.startsWith("Menos de")) {
-            answer = "Menys de 20 cm.";
-        } else if (text.startsWith("Más de")) {
-            answer = "Més de 20 cm.";
-        } else if (text.startsWith("Árbol")) {
-            answer = "Arbre";
-        } else if (text.startsWith("Edificio")) {
-            answer = "Edifici";
-        } else if (text.startsWith("Otros")) {
-            answer = "Altres";
-        } else if (text.startsWith("Sí")) {
-            answer = "Sí";
-        } else if (text.equals("No")) {
-            answer = "No";
-        } else if (text.startsWith("Comía fru")) {
-            answer = "Menjava fruita/fems";
-        } else if (text.startsWith("Capturaba")) {
-            answer = "Capturava abelles o altres insectes";
-        } else if (text.startsWith("Volaba")) {
-            answer = "Volava";
-        } else if (text.startsWith("No lo")) {
-            answer = "No ho sé";
-        }
-        return answer;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView;
@@ -114,11 +59,17 @@ public class ScreenSlidePageFragment extends Fragment {
             rootView = (ViewGroup) inflater.inflate(R.layout.fragment_multiple_answer, container, false);
             LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.layout_multiple_answer);
 
-            //Si esta en catala, feim parche a la espera de canviar WS
             String question_text = question.getTitle();
-            if (Locale.getDefault().getLanguage().equals("ca")) {
-                question_text = translateQuestionToCatalan(question.getTitle());
+            //Cambiamos según idioma
+            if (Locale.getDefault().getLanguage().equals("ca")) {//CATALÀ
+                question_text = question.getTitle_ca();
             }
+//            else if (Locale.getDefault().getLanguage().equals("en")) {//ENGLISH
+//                question_text = question.getTitle_en();
+//            } else if (Locale.getDefault().getLanguage().equals("de")) {//DEUTSCH
+//                question_text = question.getTitle_de();
+//            }
+
 
             TextView text = (TextView) rootView.findViewById(R.id.text_multiple_answer);
             text.setText(question_text);
@@ -135,11 +86,16 @@ public class ScreenSlidePageFragment extends Fragment {
                         checkAnswerFirst.getPaddingRight(),
                         checkAnswerFirst.getPaddingBottom());
 
-                //Si esta en catala, feim parche a la espera de canviar WS
+                //Cambiamos según idioma
                 String answer_text = answer.getValue();
-                if (Locale.getDefault().getLanguage().equals("ca")) {
-                    answer_text = translateAnswerToCatalan(answer.getValue());
+                if (Locale.getDefault().getLanguage().equals("ca")) {//CATALÀ
+                    answer_text = answer.getValue_ca();
                 }
+//                else if (Locale.getDefault().getLanguage().equals("en")) {//ENGLISH
+//                    answer_text = answer.getValue_en();
+//                } else if (Locale.getDefault().getLanguage().equals("de")) {//DEUTSCH
+//                    answer_text = answer.getValue_de();
+//                }
 
                 checkAnswerFirst.setText(answer_text);
                 checkAnswerFirst.setOnClickListener(new View.OnClickListener() {
@@ -187,22 +143,32 @@ public class ScreenSlidePageFragment extends Fragment {
             LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.linear_layout);
             RadioGroup rg = (RadioGroup) rootView.findViewById(R.id.radiogroup_one_answer);
 
-            //Si esta en catala, feim parche a la espera de canviar WS
             String question_text = question.getTitle();
-            if (Locale.getDefault().getLanguage().equals("ca")) {
-                question_text = translateQuestionToCatalan(question.getTitle());
+            //Cambiamos según idioma
+            if (Locale.getDefault().getLanguage().equals("ca")) {//CATALÀ
+                question_text = question.getTitle_ca();
             }
+//            else if (Locale.getDefault().getLanguage().equals("en")) {//ENGLISH
+//                question_text = question.getTitle_en();
+//            } else if (Locale.getDefault().getLanguage().equals("de")) {//DEUTSCH
+//                question_text = question.getTitle_de();
+//            }
 
             TextView text = (TextView) rootView.findViewById(R.id.text_one_answer);
             text.setText(question_text);
 
             for (final Answer answer : question.getAvailable_answers()) {
 
-                //Si esta en catala, feim parche a la espera de canviar WS
+                //Cambiamos según idioma
                 String answer_text = answer.getValue();
-                if (Locale.getDefault().getLanguage().equals("ca")) {
-                    answer_text = translateAnswerToCatalan(answer.getValue());
+                if (Locale.getDefault().getLanguage().equals("ca")) {//CATALÀ
+                    answer_text = answer.getValue_ca();
                 }
+//                else if (Locale.getDefault().getLanguage().equals("en")) {//ENGLISH
+//                    answer_text = answer.getValue_en();
+//                } else if (Locale.getDefault().getLanguage().equals("de")) {//DEUTSCH
+//                    answer_text = answer.getValue_de();
+//                }
 
                 RadioButton radioAnswerFirst = new RadioButton(getActivity());
                 radioAnswerFirst.setText(answer_text);

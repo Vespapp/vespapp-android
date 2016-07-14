@@ -284,23 +284,6 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(i, PICK_IMAGE_REQUEST);
     }
 
-    private String translateToCatalan(String title_info) {
-        String title = title_info;
-        if (title_info.startsWith("Ficha identificación avispa asiática")) {
-            title = "Fitxa identificació vespa asiàtica";
-        } else if (title_info.startsWith("Ficha identificación nido")) {
-            title = "Fitxa identificació niu";
-        } else if (title_info.startsWith("¡No")) {
-            title = "No l'hem de confondre!";
-        } else if (title_info.startsWith("Biolo")){
-            title = "Biologia";
-        } else if (title_info.startsWith("Impactos")) {
-            title = "Impactes";
-        } else if (title_info.startsWith("Importancia")) {
-            title = "Importància de les abelles";
-        } return title;
-    }
-
     private void getInfo() {
         final VespappApi api = Vespapp.get(this).getApi();
 
@@ -315,10 +298,15 @@ public class MainActivity extends AppCompatActivity {
                     params.setMargins(15, 50, 20, 20);
 
                     String title_info = info.getTitle();
-                    //Si esta en catala, de moment feim parche
-                    if (Locale.getDefault().getLanguage().equals("ca")) {
-                        title_info = translateToCatalan(info.getTitle());
+                    //Cambiamos según idioma
+                    if (Locale.getDefault().getLanguage().equals("ca")) {//CATALÀ
+                        title_info = info.getTitle_ca();
                     }
+//                    else if (Locale.getDefault().getLanguage().equals("en")) {//ENGLISH
+//                        title_info = info.getTitle_en();
+//                    } else if (Locale.getDefault().getLanguage().equals("de")) {//DEUTSCH
+//                        title_info = info.getTitle_de();
+//                    }
 
                     Button btn = new Button(getApplicationContext());
                     btn.setText(title_info);

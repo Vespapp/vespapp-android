@@ -130,7 +130,7 @@
             android:layout_toRightOf="@id/iconMenu3"
             android:ellipsize="marquee"
             android:singleLine="true"
-            android:text="@string/tab_menu_contributors_secondLine"
+            android:text=""
             android:textSize="12sp" />
 
         <TextView

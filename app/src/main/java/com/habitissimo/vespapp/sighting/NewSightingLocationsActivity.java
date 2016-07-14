@@ -15,6 +15,7 @@ import com.habitissimo.vespapp.async.Task;
 import com.habitissimo.vespapp.async.TaskCallback;
 
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -96,7 +97,17 @@ public class NewSightingLocationsActivity extends AppCompatActivity {
         LinearLayout locationsList = (LinearLayout) findViewById(R.id.layout_locations_list);
         LinearLayout itemList = (LinearLayout) View.inflate(this, R.layout.item_location, null);
         TextView itemText = (TextView) itemList.findViewById(R.id.text_item_list);
-        itemText.setText(location.getName());
+
+        String location_name = location.getName();
+        if (Locale.getDefault().getLanguage().equals("ca")) {//CATALÀ
+            location_name = location.getName_ca();
+        }
+//            else if (Locale.getDefault().getLanguage().equals("en")) {//ENGLISH
+//                location_name = location.getName_en();
+//            } else if (Locale.getDefault().getLanguage().equals("de")) {//DEUTSCH
+//                location_name = location.getName_de();
+//            }
+        itemText.setText(location_name);
         locationsList.addView(itemList);
 
         itemList.setOnClickListener(new View.OnClickListener() {

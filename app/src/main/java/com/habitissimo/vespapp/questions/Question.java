@@ -15,6 +15,10 @@ public class Question implements Serializable {
     private List<Answer> answers;
     private List<Answer> available_answers;
     private String title;
+    private String title_ca;
+    /* Para futuras actualizaciones de idioma */
+//    private String title_en;
+//    private String title_de;
 
     private boolean is_active;
 
@@ -22,11 +26,18 @@ public class Question implements Serializable {
     private int sighting_type;
 
     public Question(int id, List<Answer> answers, List<Answer> available_answers,
-                    String title, boolean is_active, int question_type, int sighting_type) {
+                    String title, String title_ca, /*String title_en, String title_de*/
+                    boolean is_active, int question_type, int sighting_type) {
         this.id = id;
         this.answers = answers;
         this.available_answers = available_answers;
         this.title = title;
+        this.title_ca = title_ca;
+
+        /*Para futuras actualizaciones de idioma */
+//        this.title_en = title_en;
+//        this.title_de = title_de;
+
         this.is_active = is_active;
         this.question_type = question_type;
         this.sighting_type = sighting_type;
@@ -55,6 +66,19 @@ public class Question implements Serializable {
     public String getTitle() {
         return title;
     }
+
+    public String getTitle_ca() {
+        return title_ca;
+    }
+
+    /* Desecomentar para futuras actualizaciones de idioma */
+//    public String getTitle_en() {
+//        return title_en;
+//    }
+//
+//    public String getTitle_de() {
+//        return title_de;
+//    }
 
     public boolean is_active() {
         return is_active;

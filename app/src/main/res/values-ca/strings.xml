@@ -38,27 +38,44 @@
     <string name="about_us_date_1">Octubre de 2015</string>
     <string name="about_us_title_1">"Primera detecció de vespa asiàtica a Mallorca"</string>
     <string name="about_us_body_1">"El Laboratori de Zoologia del Departament de Biologia de la Universitat de les Illes Balears va confirmar la detecció per primera vegada d'aquesta vespa a Mallorca, gràcies a la col·laboració dels apicultors."</string>
-    <string name="about_us_link_1">http://diari.uib.es/arxiu/La-avispa-asiatica-ya-esta-en-Mallorca.cid411005</string>
+    <string name="about_us_link_1">http://diari.uib.cat/arxiu/La-vespa-asiatica-ja-es-a-Mallorca.cid411005</string>
 
     <string name="about_us_date_2">Octubre - Novembre de 2015</string>
     <string name="about_us_title_2">Localització i retirada del niu</string>
     <string name="about_us_body_2">"El Servei de Protecció d'Espècies de la Conselleria de Medi Ambient, Agricultura i Pesca organitza operatius per a la detecció del niu de la vespa asiàtica. L'equip de control de fauna del COFIB aconsegueix retirar amb èxit l'únic niu trobat a la zona de la vall de Sóller."</string>
-    <string name="about_us_link_2">http://www.caib.es/pidip/dadesComunicat.do?lang=es&amp;codi=8835160</string>
+    <string name="about_us_link_2">http://www.caib.es/govern/pidip/dadesComunicat.do?lang=ca&amp;codi=8835160</string>
 
     <string name="about_us_date_3">Març de 2016</string>
     <string name="about_us_title_3">"Marató informàtica per dissenyar una app contra la vespa asiàtica"</string>
     <string name="about_us_body_3">"La UIB (Laboratori de Zoologia, Escola Politècnica Superior i Vicerectorat d'Innovació i Transferència) i Habitissimo organitzen una marató informàtica per dissenyar una app contra la vespa asiàtica. Primera fase de la creació de Vespapp."</string>
-    <string name="about_us_link_3">http://diari.uib.es/arxiu/La-UIB-y-Habitissimo-organizan-un-maraton.cid432855</string>
+    <string name="about_us_link_3">http://diari.uib.cat/arxiu/La-UIB-i-Habitissimo-organitzen-una-marato.cid432855</string>
 
     <string name="about_us_date_4">Abril – Maig de 2016</string>
     <string name="about_us_title_4">Segona fase de la creació de Vespapp</string>
     <string name="about_us_body_4">"L'equip investigador del projecte de ciència ciutadana Vespapp (Laboratori de Zoologia, àrea d’Informàtica, Servei de Sistemes d'Informació Geogràfica (SSIG) i àrea de comunicació, participació i xarxes socials) ha desenvolupat la segona fase de l'aplicació amb la col·laboració de tres estudiants d'Enginyeria Informàtica becats per la Càtedra Santander-UIB d'Innovació i Transferència del Coneixement (CSUIT)."</string>
     <string name="about_us_link_4"></string>
 
-    <string name="about_us_date_5">Maig de 2016:</string>
-    <string name="about_us_title_5">Presentació de Vespapp</string>
-    <string name="about_us_body_5"></string>
-    <string name="about_us_link_5"></string>
+    <string name="about_us_date_5">Juny de 2016</string>
+    <string name="about_us_title_5">"Presentació de Vespapp"</string>
+    <string name="about_us_body_5">"Dia 8 de juny es va presentar oficialment el projecte Vespapp a la Universitat de les Illes Balears. El seu objectiu és la detecció precoç de la vespa asiàtica. La presentaren:\n\n &#8226; <b>Senyor Vicenç Vidal</b>, conseller de Medi Ambient, Agricultura i Pesca del Govern de les Illes Balears\n\n
+        &#8226; <b>Senyora Bàrbara Terrassa</b>, cap de servei de Recerca i Desenvolupament Tecnològic de la Conselleria d’Innovació, Recerca i Turisme del Govern de les Illes Balears\n\n
+        &#8226; <b>Doctora Mar Leza</b>, de l’àrea de Zoologia i codirectora del projecte\n\n
+        &#8226; <b>Doctor Llorenç Huguet</b>, rector de la UIB\n\n
+        &#8226; <b>Senyors Jordi Llull</b>, cap tècnic, i <b>Lídia Nicolau</b>, responsable de persones i cultura, d’Habitissimo\n\n
+        &#8226; <b>Doctor Bartomeu Alorda</b>, director de la Càtedra Santander-UIB d’Innovació i Transferència\n\n
+        &#8226; <b>Doctor Carlos Guerrero</b>, professor de l’Escola Politècnica Superior i codirector del projecte\n\n
+        &#8226; <b>Doctor Miquel Àngel Miranda</b>, professor de Zoologia del Departament de Biologia de la UIB\n\n
+        &#8226; <b>Doctor Maurici Ruiz</b>, cap del Servei de Sistemes d’Informació Geogràfica i Teledetecció de la UIB\n\n
+        &#8226; <b>Doctor Jordi Llabrés</b>, vicerector d’Innovació i Transferència de la UIB\n\n
+        &#8226; <b>Joan Martín</b>, <b>Carlos Tenorio</b> i <b>Camila Pérez</b> estudiants del grau d’Enginyeria Informàtica de la UIB"
+    </string>
+    <string name="about_us_link_5">http://diari.uib.cat/arxiu/Roda-informativa-Presentacio-de-la-Vespapp-per.cid445787</string>
+
+    <string name="about_us_date_6">Actualment</string>
+    <string name="about_us_title_6">"Visca la ciència ciutadana!"</string>
+    <string name="about_us_body_6">"La ciutadania de les Illes Balears s'ha bolcat amb el projecte de ciència ciutadana i gràcies a això cada dia estam més a prop de complir el nostre objectiu.\n\n<b>Moltes gràcies a tots!</b>\n\nNo t\'oblidis te seguir-nos a les xarxes socials!\n\n <b>#EntreTotsEsPossible #STOPVespa #AUPAAbelles</b>\n"</string>
+    <string name="about_us_link_6">&#8226; Facebook: https://www.facebook.com/VespApp\n\n&#8226; Twitter: https://twitter.com/vespapp\n
+    </string>
 
     <string name="menu_contact_name">Nom</string>
     <string name="menu_contact_name_hint">"Què noms?"</string>

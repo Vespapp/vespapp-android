@@ -67,37 +67,36 @@ public class InfoDescriptionActivity extends AppCompatActivity {
         String title = info.getTitle();
         String body = info.getBody();
         String imageUrl = info.getImage();
-        Log.d("[InfoDescription]", "ImageURL = "+imageUrl);
 
-        //Si esta en catala, de moment feim parche
-        Log.d("[InfoDescription]", "Locale = " + Locale.getDefault().getLanguage());
-        if (Locale.getDefault().getLanguage().equals("ca")) {
-            title = translateTitleToCatalan(info.getTitle());
-            body = translateBodyToCatalan(info.getTitle());
+        //Cambiamos valores según idioma
+        if (Locale.getDefault().getLanguage().equals("ca")) {//CATALÀ
+            title = info.getTitle_ca();
+            body = info.getBody_ca();
+            imageUrl = info.getImage_ca();
         }
+//        else if (Locale.getDefault().getLanguage().equals("en")) {//ENGLISH
+//            title = info.getTitle_en();
+//            body = info.getBody_en();
+//            imageUrl = info.getImage_en();
+//        } else if (Locale.getDefault().getLanguage().equals("de")) {//DEUTSCH
+//            title = info.getTitle_de();
+//            body = info.getBody_de();
+//            imageUrl = info.getImage_de();
+//        }
 
         setNameToolbar(title);
 
         TextView textBody = (TextView) findViewById(R.id.info_body);
         textBody.setText(body);
 
-        try {/*
-            ImageView imageInfo = (ImageView)findViewById(R.id.info_image);
-            Bitmap bitmap = BitmapFactory.decodeStream((InputStream) new URL(imageUrl).getContent());
-            imageInfo.setImageBitmap(bitmap);*/
+        try {
 
             final ImageView imageInfo = (ImageView) findViewById(R.id.info_image);
 
             //TouchImageView --> custom ImageView from Mike Ortiz, allows ZoomIn
 //            final TouchImageView imageInfo = (TouchImageView) findViewById(R.id.info_image);
-            Bitmap bitmap = null;
-            if (title.startsWith("Fitxa identificació vespa")) {
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.morfo_vespa);
-            } else if (title.startsWith("Fitxa identificació n")) {
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.nius_cat);
-            } else {
-                bitmap = BitmapFactory.decodeStream((InputStream) new URL(imageUrl).getContent());
-            }
+            Bitmap bitmap = BitmapFactory.decodeStream((InputStream) new URL(imageUrl).getContent());
+
             Display display = getWindowManager().getDefaultDisplay();
             Point size = new Point();
             display.getSize(size);
@@ -117,7 +116,6 @@ public class InfoDescriptionActivity extends AppCompatActivity {
                         zoomImageFromThumb(imageInfo, finalBitmap);
                     }
                 });
-//                imageInfo.setMaxZoom(5);
             } else {
                 Toast.makeText(getApplicationContext(), R.string.bitmap_null_sighting_view, Toast.LENGTH_SHORT).show();
                 Log.e("[SightingViewAct]", "Null bitmap, maybe you are not connected to the Internet");
@@ -163,72 +161,6 @@ public class InfoDescriptionActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(s);
-    }
-
-    private String translateTitleToCatalan(String title_info) {
-        String title = title_info;
-        if (title_info.startsWith("Ficha identificación avispa asiática")) {
-            title = "Fitxa identificació vespa asiàtica";
-        } else if (title_info.startsWith("Ficha identificación nido")) {
-            title = "Fitxa identificació niu";
-        } else if (title_info.startsWith("¡No")) {
-            title = "No l'hem de confondre!";
-        } else if (title_info.startsWith("Biolo")){
-            title = "Biologia";
-        } else if (title_info.startsWith("Impactos")) {
-            title = "Impactes";
-        } else if (title_info.startsWith("Importancia")) {
-            title = "Importància de les abelles";
-        } return title;
-    }
-
-    private String translateBodyToCatalan(String title_info) {
-        String body = "";
-        if (title_info.startsWith("Ficha identificación avispa asiática")) {
-            body = "- Mida: 3 - 3,5 cm.\n" +
-                    "- Coloració principalment fosca.\n" +
-                    "- Cap: part superior negra, part frontal groga-taronja.\n" +
-                    "- Tòrax: castany-negre.\n" +
-                    "- Abdomen: castany amb una fina franja groga i amb el quart segment abdominal groc-taronja.\n" +
-                    "- Cames: part proximal castanya-negra, part distal groga.\n";
-        } else if (title_info.startsWith("Ficha identificación nido")) {
-            body = "Niu primari:\n" +
-                    "- Mida: 6 - 10 cm .\n" +
-                    "- Forma: esfèrica.\n" +
-                    "- Entrada per la part inferior.\n" +
-                    "\n" +
-                    "Niu secundari:\n" +
-                    "- Mida: 40 - 70 cm de diàmetre, 60 - 90 cm alçada.\n" +
-                    "- Forma: esfèrica-ovalada.\n" +
-                    "- Entrada lateral d’1,5 cm aproximadament al terç superior.\n";
-        } else if (title_info.startsWith("¡No tenemos")) {
-            body = "Hi ha altres vespes autòctones que no s'han de confondre amb la vespa asiàtica.\n" +
-                    "Les altres espècies de vespes es distingeixen de la vespa asiàtica perquè tenen " +
-                    "un patró de coloració diferent a l'abdomen, i a més, presenten taques grogues al " +
-                    "tòrax i al cap (a diferència de la vespa asiàtica, que té la part superior del cap" +
-                    " i el tòrax negres).\n";
-        } else if (title_info.startsWith("Biolo")){
-            body = "És una espècie diürna.\n" +
-                    "Les obreres cacen abelles mel·líferes i altres insectes per alimentar les cries. " +
-                    "A més, també pot alimentar-se de fruita madura i nèctar.\n" +
-                    "Les reines hibernen durant l'hivern i en arribar la primavera les reines fundadores " +
-                    "construeixen els nius primaris (que tenen una mida aproximada de 10 cm). Entre abril i " +
-                    "maig neixen les obreres i formen els nius secundaris, que són més grans. " +
-                    "Al setembre-octubre és quan la colònia presenta el màxim nombre d'individus (1.200-1.800) " +
-                    "i neixen els mascles, que fecunden les futures reines. A l'hivern les futures " +
-                    "reines abandonen els nius i hibernen i la resta de la colònia mor.\n";
-        } else if (title_info.startsWith("Impactos")) {
-            body = "És una espècie exòtica invasora, originària del Sud-est asiàtic.\n" +
-                    "\n" +
-                    "Els impactes que provoca són a tres nivells:\n" +
-                    "- Ecològic: pèrdua de pol·linitzadors , fet que suposa un greu desequilibri de l'ecosistema.\n" +
-                    "- Econòmic: és una amenaça per a l'apicultura, ja que implica la pèrdua de caseres.\n" +
-                    "- Sobre la salut humana: pel comportament i la perillositat és similar a la vespa autòctona.\n";
-        } else if (title_info.startsWith("Importancia")) {
-            body = "- Són pol·linitzadors essencials de plantes silvestres i conreades, i per això són imprescindibles " +
-                    "per a la conservació dels ecosistemes i la producció d'aliments.\n" +
-                    "- Elaboren mel i altres productes apícoles.\n";
-        } return body;
     }
 
     private void zoomImageFromThumb(final View thumbView, Bitmap bitmap) {
