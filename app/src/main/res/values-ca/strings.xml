@@ -73,7 +73,7 @@
 
     <string name="about_us_date_6">Actualment</string>
     <string name="about_us_title_6">"Visca la ciència ciutadana!"</string>
-    <string name="about_us_body_6">"La ciutadania de les Illes Balears s'ha bolcat amb el projecte de ciència ciutadana i gràcies a això cada dia estam més a prop de complir el nostre objectiu.\n\n<b>Moltes gràcies a tots!</b>\n\nNo t\'oblidis te seguir-nos a les xarxes socials!\n\n <b>#EntreTotsEsPossible #STOPVespa #AUPAAbelles</b>\n"</string>
+    <string name="about_us_body_6">"La ciutadania de les Illes Balears s'ha bolcat amb el projecte de ciència ciutadana i gràcies a això cada dia estam més a prop de complir el nostre objectiu.\n\n<b>Moltes gràcies a tots!</b>\n\nNo us oblideu de seguir-nos a les xarxes socials!\n\n <b>#EntreTotsEsPossible #STOPVespa #AUPAAbelles</b>\n"</string>
     <string name="about_us_link_6">&#8226; Facebook: https://www.facebook.com/VespApp\n\n&#8226; Twitter: https://twitter.com/vespapp\n
     </string>
 
@@ -95,6 +95,8 @@
     <string name="tab_menu_about_secondLine">"Coneix la nostra història"</string>
     <string name="tab_menu_contributors_firstLine">Col·laboradors</string>
     <string name="tab_menu_contributors_secondLine">Ells ho han fet possible</string>
+    <string name="tab_menu_login_firstLine">Registre</string>
+    <string name="tab_menu_login_secondLine">"Ajuda'ns a trobar-te"</string>
 
     <string name="questions_activity_toast">"Gràcies per contestar les preguntes"</string>
     <string name="questions_send">Envia</string>
@@ -134,4 +136,19 @@
     <string name="loading_dialog_text">Processant...</string>
 
     <string name="bitmap_null_sighting_view">Hi ha hagut un problema en carregar la imatge</string>
+
+    <string name="link_to_play_store">https://play.google.com/store/apps/details?id=com.habitissimo.vespapp&amp;hl=ca</string>
+    <string name="link_to_sign_in">http://vespapp.uib.es/signup/</string>
+
+    <string name="dialog_title">"Actualització disponible"</string>
+    <string name="dialog_positive_button">"Vés a Play Store"</string>
+    <string name="dialog_negative_button">"Cancel·la"</string>
+
+    <string name="dialog_email_title">"Ajuda'ns"</string>
+    <string name="dialog_email_message">"Per favor, introdueix la teva adreça electrònica per que poguem contactar amb tu en cas d'EMERGENCIA."</string>
+    <string name="dialog_email_positive_button">Accepta</string>
+    <string name="dialog_email_negative_button">"Cancel·la"</string>
+    <string name="dialog_email_toast">"Moltes gràcies per la seva col·laboració!"</string>
+
+    <string name="checking_email_toast">"Per favor, registra't per que poguem contactar amb tu en cas d'EMERGENCIA"</string>
 </resources>

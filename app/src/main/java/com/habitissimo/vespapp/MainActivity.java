@@ -1,19 +1,27 @@
 package com.habitissimo.vespapp;
 
 import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -23,13 +31,17 @@ import android.widget.TabHost;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.habitissimo.vespapp.api.VespappApi;
+import com.habitissimo.vespapp.appversion.AppVersion;
 import com.habitissimo.vespapp.async.Task;
 import com.habitissimo.vespapp.async.TaskCallback;
 import com.habitissimo.vespapp.database.Database;
+import com.habitissimo.vespapp.dialog.EmailDialog;
+import com.habitissimo.vespapp.dialog.VersionDialog;
 import com.habitissimo.vespapp.info.Info;
 import com.habitissimo.vespapp.info.InfoDescriptionActivity;
 import com.habitissimo.vespapp.map.Map;
@@ -46,6 +58,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -74,10 +87,73 @@ public class MainActivity extends AppCompatActivity {
 
         activity = this;
 
+        checkAppVersion();
+
         initTabs();
         initCamBtn();
         initSelectPicturesBtn();
     }
+
+    private void checkAppVersion() {
+        final VespappApi api = Vespapp.get(this).getApi();
+
+        final Callback<List<AppVersion>> callback = new Callback<List<AppVersion>>() {
+            @Override
+            public void onResponse(Call<List<AppVersion>> call, Response<List<AppVersion>> response) {
+                final List<AppVersion> appVersionList = response.body();
+
+                for (int i = 0; i < appVersionList.size(); ++i) {
+                    //Si hay nueva version de app, avisa mediante un dialog
+                    if (Integer.parseInt(appVersionList.get(i).getVersion()) == BuildConfig.VERSION_CODE
+                            && !appVersionList.get(i).getIsLast()) {
+                        String message = appVersionList.get(i).getMessage();
+                        if (Locale.getDefault().getLanguage().equals("ca")) {//CATALÀ
+                            message = appVersionList.get(i).getMessage_ca();
+                        }
+                        VersionDialog newFragment = VersionDialog.newInstance(message);
+                        newFragment.show(getSupportFragmentManager(), "versionDialog");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AppVersion>> call, Throwable t) {
+                System.out.println("onFailure " + t);
+            }
+        };
+        Task.doInBackground(new TaskCallback<List<AppVersion>>() {
+            @Override
+            public List<AppVersion> executeInBackground() {
+                Call<List<AppVersion>> call = api.getAppVersion();
+                call.enqueue(callback);
+                return null;
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                callback.onFailure(null, t);
+            }
+
+            @Override
+            public void onCompleted(List<AppVersion> locations) {
+                callback.onResponse(null, Response.success((List<AppVersion>) null));
+
+            }
+        });
+    }
+
+//    private AppVersion getNewestAppVersion(List<AppVersion> appVersionList) {
+//        AppVersion newest = new AppVersion("0", "Está usando una versión antigua de Vespapp", "Està utilitzant una versió antiga de Vespapp");
+//
+//        int max_version = 0;
+//        for (int i = 0; i < appVersionList.size(); ++i) {
+//            if (Integer.parseInt(appVersionList.get(i).getVersion()) > max_version) {
+//                max_version = Integer.parseInt(appVersionList.get(i).getVersion());
+//                newest = appVersionList.get(i);
+//            }
+//        }
+//        return newest;
+//    }
 
     private void initTabs() {
         final TabHost tabs = (TabHost) findViewById(R.id.tabs_main);
@@ -246,6 +322,43 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        ((RelativeLayout) findViewById(R.id.layout_menu_tab_login)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EmailDialog newFragment = EmailDialog.newInstance();
+                newFragment.show(getSupportFragmentManager(), "emailDialog");
+            }
+        });
+//        if (!checkIfEmailRegistered())
+//                ((RelativeLayout) findViewById(R.id.layout_menu_tab_login)).setBackgroundColor(getResources().getColor(R.color.red));
+    }
+
+    private boolean checkIfEmailRegistered() {
+
+        if (!getEmailFromPreferences().equals(""))
+            return true;
+
+        if (!getEmailFromAccount().equals(""))
+            return true;
+
+        return false;
+    }
+    private String getEmailFromAccount() {
+        Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
+        Account[] accounts = AccountManager.get(getApplicationContext()).getAccounts();
+        for (Account account : accounts) {
+            if (emailPattern.matcher(account.name).matches()) {
+                return account.name;
+            }
+        }
+        return "";
+    }
+
+    private String getEmailFromPreferences() {
+        SharedPreferences prefs =
+                getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE);
+
+        return prefs.getString("email", "");
     }
 
     private void initSelectPicturesBtn() {
@@ -387,7 +500,13 @@ public class MainActivity extends AppCompatActivity {
                 for (Sighting sighting : sightingList) {
                     if (sighting.is_public()) {
                         LatLng myLocation = new LatLng(sighting.getLat(), sighting.getLng());
-                        marker = Gmap.addMarker(new MarkerOptions().position(myLocation));
+                        if (sighting.is_valid())
+                            marker = Gmap.addMarker(new MarkerOptions()
+                                    .position(myLocation)
+                                    .icon(BitmapDescriptorFactory
+                                    .defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        else
+                            marker = Gmap.addMarker(new MarkerOptions().position(myLocation));
                         relation.put(marker.getId(), sighting);
                     }
                 }

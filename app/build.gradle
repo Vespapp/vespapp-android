@@ -9,18 +9,19 @@ android {
     defaultConfig {
         applicationId "com.habitissimo.vespapp"
         minSdkVersion 16
-        targetSdkVersion 22
-        versionCode 4
-        versionName "1.0.3"
+        targetSdkVersion 23
+
+        versionCode 6
+        versionName "1.0.5"
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        debug {
-            debuggable false
-        }
+//        debug {
+//            debuggable false
+//        }
     }
 }
 

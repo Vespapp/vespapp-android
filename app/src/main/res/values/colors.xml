@@ -23,4 +23,6 @@
 
     <color name="transparent">#80FFFFFF</color>
 
+    <color name="red">#F44336</color>
+
 </resources>

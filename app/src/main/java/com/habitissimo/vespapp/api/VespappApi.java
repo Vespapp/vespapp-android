@@ -1,5 +1,6 @@
 package com.habitissimo.vespapp.api;
 
+import com.habitissimo.vespapp.appversion.AppVersion;
 import com.habitissimo.vespapp.info.Info;
 import com.habitissimo.vespapp.questions.Question;
 import com.habitissimo.vespapp.sighting.Location;
@@ -35,6 +36,9 @@ public interface VespappApi {
 
     @GET("info/")
     Call<List<Info>> getInfo();
+
+    @GET("appversion/")
+    Call<List<AppVersion>> getAppVersion();
 
     @POST("sightings/")
     Call<Sighting> createSighting(@Body Sighting sighting);
