@@ -96,7 +96,7 @@
     <string name="tab_menu_about_secondLine">Conoce nuestra historia</string>
     <string name="tab_menu_contributors_firstLine">Colaboradores</string>
     <string name="tab_menu_contributors_secondLine">Ellos lo han hecho posible</string>
-    <string name="tab_menu_login_firstLine">Registro</string>
+    <string name="tab_menu_login_firstLine">Correo electrónico</string>
     <string name="tab_menu_login_secondLine">Ayúdanos a encontrarte</string>
 
     <string name="questions_activity_toast">Gracias por contestar las preguntas</string>
@@ -146,10 +146,28 @@
     <string name="dialog_negative_button">Cancelar</string>
 
     <string name="dialog_email_title">Ayúdanos</string>
-    <string name="dialog_email_message">Por favor, introduce tu correo electrónico para que podamos contactar contigo en caso de EMERGENCIA.</string>
+    <string name="dialog_email_message">"Por favor, danos un correo electrónico para que podamos contactar contigo en caso de EMERGENCIA.\n\nSi nos lo proporcionas, podrás ver tus avispamientos y recibirás notificaciones informativas cuando las hayamos procesado."</string>
     <string name="dialog_email_positive_button">Aceptar</string>
     <string name="dialog_email_negative_button">Cancelar</string>
-    <string name="dialog_email_toast">¡Muchas gracias por su colaboración!</string>
+    <string name="dialog_email_toast">¡Muchas gracias!</string>
 
-    <string name="checking_email_toast">Por favor, regístrate para que podamos contactar contigo en caso de EMERGENCIA</string>
+    <string name="checking_email_toast">"Por favor, danos un correo electrónico para casos de EMERGENCIA."</string>
+    <string name="notification_line_wasp">": AVISPA procesada como "</string>
+    <string name="notification_line_nest">": NIDO procesado como "</string>
+    <string name="notification_line">": procesado como "</string>
+
+    <string name="notification_result_positive">POSITIVO</string>
+    <string name="notification_result_negative">NEGATIVO</string>
+    <string name="notification_result_unknown">DESCONOCIDO</string>
+
+    <string name="notification_processed_sighting">"Avispamiento procesado"</string>
+    <string name="notification_processed_sightings">" avispamientos procesados"</string>
+    <string name="notification_processed_wasp_nest">Avispas y nidos procesados</string>
+
+    <string name="permission_warning_storage_1">"¡Se necesita poder guardar las fotos en el dispositivo para luego enviarlas a la web!"</string>
+    <string name="permission_warning_storage_2">"¡Active manualmente el permiso de ALMACENAMIENTO para poder continuar!"</string>
+    <string name="permission_warning_storage_3">"¡Se necesitan permisos para poder acceder a las imágenes!"</string>
+
+    <string name="loading_photo">"Cargando foto..."</string>
+    <string name="getting_sightings_list">"Obteniendo datos... cambie de pestaña para actualizar mapa"</string>
 </resources>

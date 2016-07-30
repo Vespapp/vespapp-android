@@ -8,6 +8,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <permission android:name="com.habitissimo.vespapp.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.habitissimo.vespapp.permission.C2D_MESSAGE" />
 
     <!--
     The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -91,6 +96,18 @@
             android:label="@string/title_activity_menu_contact"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
+
+        <!--<receiver-->
+            <!--android:name=".GCMBroadcastReceiver"-->
+            <!--android:permission="com.google.android.c2dm.permission.SEND" >-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.android.c2dm.intent.RECEIVE" />-->
+                <!--<category android:name="com.habitissimo.vespapp" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
+
+        <!--<service android:name=".GCMIntentService" />-->
+
     </application>
 
 </manifest>

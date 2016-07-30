@@ -9,9 +9,9 @@ import java.util.List;
 
 public class Sighting implements Serializable {
 
-    private static final int STATUS_PENDING = 0;
-    private static final int STATUS_PROCESSING = 1;
-    private static final int STATUS_PROCESSED = 2;
+    public static final int STATUS_PENDING = 0;
+    public static final int STATUS_PROCESSING = 1;
+    public static final int STATUS_PROCESSED = 2;
     //private static final int STATUS_UNSENT = -1;
 
     public static final int TYPE_WASP = 1;

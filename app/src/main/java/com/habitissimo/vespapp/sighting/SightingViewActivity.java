@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -347,6 +348,7 @@ public class SightingViewActivity extends AppCompatActivity {
             imageInfo.setCropToPadding(true);
             vp.setMargins(0, 35, 0, 0); //(left, top, right, bottom);
 
+            Log.d("[SightingViewAct]", "URL = "+picture.getFile());
             bitmap = BitmapFactory.decodeStream((InputStream) new URL(picture.getFile()).getContent());
             Display display = getWindowManager().getDefaultDisplay();
             Point size = new Point();
@@ -372,7 +374,7 @@ public class SightingViewActivity extends AppCompatActivity {
                 ll.addView(imageInfo);
             } else {
                 Toast.makeText(getApplicationContext(), R.string.bitmap_null_sighting_view, Toast.LENGTH_SHORT).show();
-                Log.e("[SightingViewAct]", "Null bitmap, maybe you are not connected to the Internet");
+                Log.e("[SightingViewAct]", "Null bitmap, MAYbe you are not connected to the Internet");
             }
 
         } catch (IOException e) {
@@ -393,25 +395,30 @@ public class SightingViewActivity extends AppCompatActivity {
     }
 
     private void initMap() {
-        final GoogleMap Gmap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-        int permissionCheck_Coarse_Location = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION);
-        int permissionCheck_Fine_Location = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
+        ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap Gmap) {
+                int permissionCheck_Coarse_Location = ContextCompat.checkSelfPermission(getApplicationContext(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION);
+                int permissionCheck_Fine_Location = ContextCompat.checkSelfPermission(getApplicationContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION);
 
-        if (permissionCheck_Coarse_Location == PackageManager.PERMISSION_GRANTED &&
-                permissionCheck_Fine_Location == PackageManager.PERMISSION_GRANTED)
-            Gmap.setMyLocationEnabled(false);
+                if (permissionCheck_Coarse_Location == PackageManager.PERMISSION_GRANTED &&
+                        permissionCheck_Fine_Location == PackageManager.PERMISSION_GRANTED)
+                    Gmap.setMyLocationEnabled(false);
 
-        map = new Map(Gmap);
+                map = new Map(Gmap);
 
-        double lat = sighting.getLat();
-        double lng = sighting.getLng();
-        int zoom = 15;
+                double lat = sighting.getLat();
+                double lng = sighting.getLng();
+                int zoom = 15;
 
-        LatLng myLocation = new LatLng(lat, lng);
-        marker = Gmap.addMarker(new MarkerOptions().position(myLocation));
-        map.moveCamera(lat, lng, zoom);
+                LatLng myLocation = new LatLng(lat, lng);
+                marker = Gmap.addMarker(new MarkerOptions().position(myLocation));
+                map.moveCamera(lat, lng, zoom);
+            }
+        });
+
     }
 
     private void zoomImageFromThumb(final View thumbView, Bitmap bitmap) {

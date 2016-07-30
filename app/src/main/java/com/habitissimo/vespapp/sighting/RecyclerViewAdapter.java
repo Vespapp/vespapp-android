@@ -54,13 +54,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
 
     @Override
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
+        Log.d("[RecyclerViewAdapter]", "URL? = "+itemList.get(position));
         Bitmap img = BitmapFactory.decodeFile(itemList.get(position));
         if (img != null) {//ANR
             img = getResizedBitmap(img, 640);
             holder.photo.setImageBitmap(img);
         } else {
             Toast.makeText(context, R.string.bitmap_null_sighting_view, Toast.LENGTH_SHORT).show();
-            Log.e("[SightingViewAct]", "Null bitmap, maybe you are not connected to the Internet");
+            Log.e("[RecyclerViewAdapter]", "NULL bitmap, maybe you are not connected to the Internet");
         }
     }
 

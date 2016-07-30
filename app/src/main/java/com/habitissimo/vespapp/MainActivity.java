@@ -4,19 +4,25 @@ import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +34,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+//import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -40,6 +50,7 @@ import com.habitissimo.vespapp.appversion.AppVersion;
 import com.habitissimo.vespapp.async.Task;
 import com.habitissimo.vespapp.async.TaskCallback;
 import com.habitissimo.vespapp.database.Database;
+import com.habitissimo.vespapp.database.SightingsDB;
 import com.habitissimo.vespapp.dialog.EmailDialog;
 import com.habitissimo.vespapp.dialog.VersionDialog;
 import com.habitissimo.vespapp.info.Info;
@@ -53,8 +64,15 @@ import com.habitissimo.vespapp.sighting.Sighting;
 import com.habitissimo.vespapp.sighting.NewSightingDataActivity;
 import com.habitissimo.vespapp.sighting.SightingViewActivity;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -67,11 +85,22 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int NOTIF_ALERTA_ID = -1;
+    private static final int NOTIF_ALERTA_ID_GROUP = -2;
+
     private static final int CAMERA_PERMISSION = 10;
     private static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 11;
+    private static final int WRITE_EXTERNAL_STORAGE_AND_CAMERA_PERMISSION = 12;
+    private static final int GET_ACCOUNT_PERMISSION = 13;
 
     private static final int TAKE_CAPTURE_REQUEST = 0;
     private static final int PICK_IMAGE_REQUEST = 1;
+
+    private static final String PROPERTY_REG_ID = "registration_id";
+    private static final String PROPERTY_APP_VERSION = "appVersion";
+    private static final String PROPERTY_EXPIRATION_TIME = "onServerExpirationTimeMs";
+    private static final String PROPERTY_USER = "user";
+    private static final String SENDER_ID = "357137804481";
 
     private File photoFile;
     private Map map;
@@ -79,6 +108,12 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, Sighting> relation = new HashMap<>();
 
     private Activity activity;
+//    private GoogleCloudMessaging gcm;
+    private String regid;
+
+    private List<Sighting> sightingsList;
+    private Toast mToastToShow;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,12 +122,192 @@ public class MainActivity extends AppCompatActivity {
 
         activity = this;
 
+//        setupGCM();
         checkAppVersion();
+
+        fillSightingsListAndNotify();
 
         initTabs();
         initCamBtn();
         initSelectPicturesBtn();
     }
+
+    private void fillSightingsListAndNotify() {
+        final VespappApi api = Vespapp.get(this).getApi();
+
+        final Callback<List<Sighting>> callback = new Callback<List<Sighting>>() {
+            @Override
+            public void onResponse(Call<List<Sighting>> call, Response<List<Sighting>> response) {
+                sightingsList = response.body();
+                notifySightings();
+            }
+
+            @Override
+            public void onFailure(Call<List<Sighting>> call, Throwable t) {
+                System.out.println("onFailure " + t);
+            }
+        };
+        Task.doInBackground(new TaskCallback<List<Sighting>>() {
+            @Override
+            public List<Sighting> executeInBackground() {
+                Call<List<Sighting>> call = api.getSightings();
+                call.enqueue(callback);
+                return null;
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                callback.onFailure(null, t);
+            }
+
+            @Override
+            public void onCompleted(List<Sighting> sightings) {
+                callback.onResponse(null, Response.success((List<Sighting>) null));
+            }
+        });
+    }
+
+    private void notifySightings() {
+        SightingsDB sdb = new SightingsDB(getApplicationContext());
+
+        ArrayList<String> sightsNotChecked = sdb.getSightsNotChecked();
+        ArrayList<Sighting> sightings = new ArrayList<>();
+
+        for (int i = 0; i < sightsNotChecked.size(); ++i) {
+            for (int j = 0; j < sightingsList.size(); ++j) {
+                if (sightsNotChecked.get(i).equals(String.valueOf(sightingsList.get(j).getId()))) {
+                    if (sightingsList.get(j).getStatus() == Sighting.STATUS_PROCESSED) {
+                        sightings.add(sightingsList.get(j));
+                        sdb.setChecked(sightsNotChecked.get(i));
+                    }
+                }
+            }
+        }
+
+        if (ifEmailRegistered())
+            showNotifications(sightings);
+    }
+
+    private void showNotifications(ArrayList<Sighting> sights) {
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
+                R.drawable.vespaicon);
+
+        if (sights.size() > 1) {
+
+            NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
+            for (int i = 0; i < sights.size() && i < 7; ++i) {
+
+                String created_at = sights.get(0).getCreated_at();
+                String month = created_at.substring(5, 7);
+                String day = created_at.substring(8, 10);
+
+                String date = day + "/"+ month;
+
+                String notif_msg = "";
+                if (sights.get(i).getType() == Sighting.TYPE_NEST)
+                    notif_msg += date + getString(R.string.notification_line_nest);
+                else if (sights.get(i).getType() == Sighting.TYPE_WASP)
+                    notif_msg += date + getString(R.string.notification_line_wasp);
+
+                if (sights.get(i).is_valid() != null && sights.get(i).is_valid())
+                    notif_msg += getString(R.string.notification_result_positive);
+                else if (sights.get(i).is_valid() != null && !sights.get(i).is_valid())
+                    notif_msg += getString(R.string.notification_result_negative);
+                else {//if (is_valid == null)
+                    notif_msg += getString(R.string.notification_result_unknown);
+                }
+
+                style.addLine(notif_msg);
+                style.setBigContentTitle(sights.size() + getString(R.string.notification_processed_sightings));
+                style.setSummaryText(getString(R.string.notification_processed_wasp_nest));
+
+            }
+
+            NotificationCompat.Builder summaryNotification = new NotificationCompat.Builder(this)
+                    .setContentTitle(sights.size() + getString(R.string.notification_processed_sightings))
+                    .setSmallIcon(R.drawable.vespaicon)
+                    .setLargeIcon(largeIcon)
+                    .setStyle(style)
+                    .setGroup("summary")
+                    .setGroupSummary(true)
+                    .setAutoCancel(true);
+
+            Intent notIntent =  new Intent(this, MainActivity.class);
+            PendingIntent contIntent = PendingIntent.getActivity(
+                    this, 0, notIntent, 0);
+
+            summaryNotification.setContentIntent(contIntent);
+
+            mNotificationManager.notify(NOTIF_ALERTA_ID_GROUP, summaryNotification.build());
+
+        } else if (sights.size() == 1) {
+
+            int icon;
+            if (sights.get(0).getType() == Sighting.TYPE_NEST)
+                icon = R.drawable.nidoicon;
+            else
+                icon = R.drawable.vespaicon;
+
+            String created_at = sights.get(0).getCreated_at();
+            String month = created_at.substring(5, 7);
+            String day = created_at.substring(8, 10);
+            String date = day + "/"+ month;
+
+            String msg = date + getString(R.string.notification_line);
+            if (sights.get(0).is_valid() != null && sights.get(0).is_valid()) {
+                msg += getString(R.string.notification_result_positive);
+            } else if (sights.get(0).is_valid() != null && !sights.get(0).is_valid()) {
+                msg += getString(R.string.notification_result_negative);
+            } else {//if (is_valid == null)
+                msg += getString(R.string.notification_result_unknown);
+            }
+
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(this)
+                            .setSmallIcon(icon)
+                            .setLargeIcon(largeIcon)
+                            .setContentTitle(getString(R.string.notification_processed_sighting))
+                            .setContentText(msg)
+                            .setAutoCancel(true);
+
+            Intent notIntent =  new Intent(this, SightingViewActivity.class);
+            notIntent.putExtra("sightingObject", sights.get(0));
+
+            PendingIntent contIntent = PendingIntent.getActivity(
+                    this, 0, notIntent, 0);
+
+            mBuilder.setContentIntent(contIntent);
+
+            mNotificationManager.notify(NOTIF_ALERTA_ID, mBuilder.build());
+
+        }
+
+    }
+
+//    private void setupGCM() {
+//
+//        if(isGooglePlayServicesAvailable(this)) {
+//            gcm = GoogleCloudMessaging.getInstance(MainActivity.this);
+//
+//            //Obtenemos el Registration ID guardado
+//            regid = getRegistrationId(getApplicationContext());
+//
+//            //Si no disponemos de Registration ID comenzamos el registro
+//            if (regid.equals("")) {
+//                GCMRegister task = new GCMRegister();
+//                String email = getEmailFromPreferences();
+//                if (email.equals(""))
+//                    email = getEmailFromAccount();
+//                task.execute(email);
+//            }
+//        }
+//        else {
+//            Log.i("[GCM MainActivity]", "No se ha encontrado Google Play Services.");
+//        }
+//    }
 
     private void checkAppVersion() {
         final VespappApi api = Vespapp.get(this).getApi();
@@ -141,19 +356,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-//    private AppVersion getNewestAppVersion(List<AppVersion> appVersionList) {
-//        AppVersion newest = new AppVersion("0", "Está usando una versión antigua de Vespapp", "Està utilitzant una versió antiga de Vespapp");
-//
-//        int max_version = 0;
-//        for (int i = 0; i < appVersionList.size(); ++i) {
-//            if (Integer.parseInt(appVersionList.get(i).getVersion()) > max_version) {
-//                max_version = Integer.parseInt(appVersionList.get(i).getVersion());
-//                newest = appVersionList.get(i);
-//            }
-//        }
-//        return newest;
-//    }
 
     private void initTabs() {
         final TabHost tabs = (TabHost) findViewById(R.id.tabs_main);
@@ -294,9 +496,72 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                } else {
+                } else if (grantResults[0] == PackageManager.PERMISSION_DENIED){
                     Log.d("[MainActivity]","Permission to write to external storage not granted");
+                    // Should we show an explanation?
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        //Show permission explanation dialog...
+                        showToast(getString(R.string.permission_warning_storage_1));
+                    } else {
+                        //Never ask again selected, or device policy prohibits the app from having that permission.
+                        //So, disable that feature, or fall back to another situation...
+                        showToast(getString(R.string.permission_warning_storage_2));
+                    }
                 }
+                return;
+            case WRITE_EXTERNAL_STORAGE_AND_CAMERA_PERMISSION:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    selectPicture();
+
+                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED){
+                    Log.d("[MainActivity]","Permission to write to external storage not granted");
+                    // Should we show an explanation?
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        //Show permission explanation dialog...
+                        showToast(getString(R.string.permission_warning_storage_3));
+                    } else {
+                        //Never ask again selected, or device policy prohibits the app from having that permission.
+                        //So, disable that feature, or fall back to another situation...
+                        showToast(getString(R.string.permission_warning_storage_2));
+                    }
+                }
+                return;
+            case GET_ACCOUNT_PERMISSION:
+                //Al no pedir permiso oficialmente, nunca se ejecuta este trozo de codigo
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
+                    Account[] accounts = AccountManager.get(getApplicationContext()).getAccounts();
+                    for (Account account : accounts) {
+                        if (emailPattern.matcher(account.name).matches()) {
+                            SharedPreferences prefs =
+                                    getSharedPreferences(Constants.PREFERENCES,Context.MODE_PRIVATE);
+
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putString("email", account.name);
+                            editor.commit();
+                        }
+                    }
+
+                } else if (grantResults[0] == PackageManager.PERMISSION_DENIED){
+                    Log.d("[MainActivity]","Permission to get email from account not granted");
+                    // Should we show an explanation?
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.GET_ACCOUNTS)) {
+                        //Show permission explanation dialog...
+
+                        /*TODO NOTA: Lo normal sería mostrar diálogos insistiendo en obtener su email, pero como ya se lo
+                        preguntamos en varias ocasiones, no insistiremos por este lado */
+
+                    } else {
+                        //Never ask again selected, or device policy prohibits the app from having that permission.
+                        //So, disable that feature, or fall back to another situation...
+
+                    }
+                }
+                return;
+
         }
     }
 
@@ -329,28 +594,52 @@ public class MainActivity extends AppCompatActivity {
                 newFragment.show(getSupportFragmentManager(), "emailDialog");
             }
         });
-//        if (!checkIfEmailRegistered())
-//                ((RelativeLayout) findViewById(R.id.layout_menu_tab_login)).setBackgroundColor(getResources().getColor(R.color.red));
     }
 
-    private boolean checkIfEmailRegistered() {
+    private boolean ifEmailRegistered() {
 
-        if (!getEmailFromPreferences().equals(""))
+        if (!getEmailFromPreferences().equals("")) {
             return true;
+        }
 
-        if (!getEmailFromAccount().equals(""))
+        if (!getEmailFromAccount().equals("")) {
             return true;
+        }
 
         return false;
     }
+
     private String getEmailFromAccount() {
-        Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
-        Account[] accounts = AccountManager.get(getApplicationContext()).getAccounts();
-        for (Account account : accounts) {
-            if (emailPattern.matcher(account.name).matches()) {
-                return account.name;
+
+        //Vale, aquí hay un pequeño conflicto moral:
+
+        //Si alguien se instala por primera vez la app puede recibir un sinfín de peticiones de permisos
+        //por cortesía de Google. Así que al final se ha decidido por ser lo más éticamente correcto
+        //y solo se insiste suavemente en obtener un email cuando se va a hacer un avispamiento
+        //en lugar de hacer peticiones a saco bastante impersonales. Si nos lo quieren dar, de lujo.
+
+        //Por si acaso ya tenemos permiso por algún motivo, obtenemos el email. Si no, nada.
+        //Ya lo pediremos amablemente más tarde.
+        int permissionCheck_Accounts = ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.GET_ACCOUNTS);
+        if (permissionCheck_Accounts == PackageManager.PERMISSION_GRANTED) {
+
+            Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
+            Account[] accounts = AccountManager.get(getApplicationContext()).getAccounts();
+            for (Account account : accounts) {
+                if (emailPattern.matcher(account.name).matches()) {
+                    return account.name;
+                }
             }
         }
+//        else {
+//
+//            showToast("Solo accederemos a tu correo electrónico para contactarte en caso de EMERGENCIA");
+//            ActivityCompat.requestPermissions(activity,
+//                    new String[]{Manifest.permission.GET_ACCOUNTS},
+//                    GET_ACCOUNT_PERMISSION);
+//        }
+
         return "";
     }
 
@@ -366,7 +655,38 @@ public class MainActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectPicture();
+                int permissionCheck_WriteExternalStorage = ContextCompat.checkSelfPermission(getApplicationContext(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                int permissionCheck_Camera = ContextCompat.checkSelfPermission(getApplicationContext(),
+                        Manifest.permission.CAMERA);
+                if (permissionCheck_WriteExternalStorage == PackageManager.PERMISSION_GRANTED &&
+                        permissionCheck_Camera == PackageManager.PERMISSION_GRANTED) {
+                    selectPicture();
+                }
+                else {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                        ActivityCompat.requestPermissions(activity,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                WRITE_EXTERNAL_STORAGE_AND_CAMERA_PERMISSION);
+
+                        ActivityCompat.requestPermissions(activity,
+                                new String[]{Manifest.permission.CAMERA},
+                                WRITE_EXTERNAL_STORAGE_AND_CAMERA_PERMISSION);
+
+                    } else {
+                        ActivityCompat.requestPermissions(activity,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                WRITE_EXTERNAL_STORAGE_AND_CAMERA_PERMISSION);
+
+//                        ActivityCompat.requestPermissions(activity,
+//                                new String[]{Manifest.permission.CAMERA},
+//                                WRITE_EXTERNAL_STORAGE_AND_CAMERA_PERMISSION);
+
+                    }
+                }
+
             }
         });
     }
@@ -385,9 +705,19 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, TAKE_CAPTURE_REQUEST);
         }
         else {
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    WRITE_EXTERNAL_STORAGE_PERMISSION);
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        WRITE_EXTERNAL_STORAGE_PERMISSION);
+
+            } else {
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        WRITE_EXTERNAL_STORAGE_PERMISSION);
+            }
         }
 
     }
@@ -465,19 +795,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initMap() {
-        final VespappApi api = Vespapp.get(this).getApi();
 
         final GoogleMap Gmap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
 
         //Comprobacion permisos para Android 6.0
-        int permissionCheck_Coarse_Location = ContextCompat.checkSelfPermission(this,
+        int permissionCheck_Coarse_Location = ContextCompat.checkSelfPermission(getApplicationContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION);
-        int permissionCheck_Fine_Location = ContextCompat.checkSelfPermission(this,
+        int permissionCheck_Fine_Location = ContextCompat.checkSelfPermission(getApplicationContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION);
 
         if (permissionCheck_Coarse_Location == PackageManager.PERMISSION_GRANTED &&
                 permissionCheck_Fine_Location == PackageManager.PERMISSION_GRANTED)
-            Gmap.setMyLocationEnabled(false);
+            Gmap.setMyLocationEnabled(true);
 
 
         map = new Map(Gmap);
@@ -492,54 +821,46 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        SightingsDB sdb = new SightingsDB(getApplicationContext());
+        ArrayList<String> localSights = sdb.getLocalSightings();
 
-        final Callback<List<Sighting>> callback = new Callback<List<Sighting>>() {
-            @Override
-            public void onResponse(Call<List<Sighting>> call, Response<List<Sighting>> response) {
-                List<Sighting> sightingList = response.body();
-                for (Sighting sighting : sightingList) {
-                    if (sighting.is_public()) {
-                        LatLng myLocation = new LatLng(sighting.getLat(), sighting.getLng());
-                        if (sighting.is_valid())
+        if (sightingsList != null) {
+            for (Sighting sighting : sightingsList) {
+                if (sighting.is_public()) {
+                    LatLng myLocation = new LatLng(sighting.getLat(), sighting.getLng());
+                    if (sighting.is_valid()) {
+                        marker = Gmap.addMarker(new MarkerOptions()
+                                .position(myLocation)
+                                .icon(BitmapDescriptorFactory
+                                        .defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                    } else {
+                        marker = Gmap.addMarker(new MarkerOptions().position(myLocation));
+                    }
+                    relation.put(marker.getId(), sighting);
+                }
+                if (ifEmailRegistered()) {
+                    for (int i = 0; i < localSights.size(); ++i) {
+                        if (String.valueOf(sighting.getId()).equals(localSights.get(i))) {
+                            LatLng myLocation = new LatLng(sighting.getLat(), sighting.getLng());
                             marker = Gmap.addMarker(new MarkerOptions()
                                     .position(myLocation)
                                     .icon(BitmapDescriptorFactory
-                                    .defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                        else
-                            marker = Gmap.addMarker(new MarkerOptions().position(myLocation));
-                        relation.put(marker.getId(), sighting);
+                                            .defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+                            relation.put(marker.getId(), sighting);
+                        }
                     }
                 }
-                double lat = 39.56;
-                double lng = 2.62;
-                int zoom = 8;
-                map.moveCamera(lat, lng, zoom);
             }
+        } else {
+            Toast.makeText(getApplicationContext(), getString(R.string.getting_sightings_list),Toast.LENGTH_LONG).show();
+            fillSightingsListAndNotify();
+        }
+        double lat = 39.56;
+        double lng = 2.62;
+        int zoom = 7;
+        map.moveCamera(lat, lng, zoom);
 
-            @Override
-            public void onFailure(Call<List<Sighting>> call, Throwable t) {
-                System.out.println("onFailure " + t);
-            }
-        };
-        Task.doInBackground(new TaskCallback<List<Sighting>>() {
-            @Override
-            public List<Sighting> executeInBackground() {
-                Call<List<Sighting>> call = api.getSightings();
-                call.enqueue(callback);
-                return null;
-            }
 
-            @Override
-            public void onError(Throwable t) {
-                callback.onFailure(null, t);
-            }
-
-            @Override
-            public void onCompleted(List<Sighting> sightings) {
-                callback.onResponse(null, Response.success((List<Sighting>) null));
-
-            }
-        });
     }
 
     private void changeActivityToSightingView(Sighting sighting) {
@@ -568,11 +889,30 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case PICK_IMAGE_REQUEST:
                     Uri selectedImage = data.getData();
+                    Log.d("[MainActivity]","URI = "+selectedImage.toString());
                     String[] filePathColumn = {MediaStore.Images.Media.DATA};
                     Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
                     cursor.moveToFirst();
                     int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                     picturePath = cursor.getString(columnIndex);
+                    if (picturePath == null) {
+                        Toast.makeText(getApplicationContext(), getString(R.string.loading_photo), Toast.LENGTH_LONG).show();
+                        InputStream is = null;
+                        try {
+                            is = getContentResolver().openInputStream(selectedImage);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
+                        Bitmap bitmap = BitmapFactory.decodeStream(is);
+                        try {
+                            is.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        picturePath = saveToSD(bitmap);
+                    }
+                    Log.d("[MainActivity]","picture path = "+picturePath);
                     cursor.close();
                     break;
             }
@@ -581,6 +921,32 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(this, NewSightingDataActivity.class);
             startActivity(i);
         }
+    }
+
+    public String saveToSD(Bitmap selectedBitmap) {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/Vespapp/TempFiles");
+        myDir.mkdirs();
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+        String fname = timeStamp + ".jpg";
+
+        String realPath = root + "/Vespapp/TempFiles/" + timeStamp + ".jpg";
+
+        File file = new File(myDir, fname);
+        if (file.exists()) file.delete();
+        try {
+            file.createNewFile();
+            FileOutputStream out = new FileOutputStream(file);
+            selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return realPath;
     }
 
     private void savePicturePathToDatabase(String picturePath) {
@@ -595,5 +961,173 @@ public class MainActivity extends AppCompatActivity {
         PicturesActions picturesActions = new PicturesActions();
         picturesActions.getList().add(picturePath);
         Database.get(this).save(Constants.PICTURES_LIST, picturesActions);
+    }
+
+    public boolean isGooglePlayServicesAvailable(Activity activity) {
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int status = googleApiAvailability.isGooglePlayServicesAvailable(activity);
+        if(status != ConnectionResult.SUCCESS) {
+            if(googleApiAvailability.isUserResolvableError(status)) {
+                googleApiAvailability.getErrorDialog(activity, status, 2404).show();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("[MainActivity]","onResume");
+
+        if (sightingsList == null) {
+            fillSightingsListAndNotify();
+        }
+//        if (isGooglePlayServicesAvailable(this)) {
+//            Log.d("[MainActivity]", "Google Play Services available");
+//        } else {
+//            Log.d("[MainActivity]", "Google Play Services NOT available");
+//        }
+
+    }
+
+    //Para Google Cloud Message
+    private String getRegistrationId(Context context) {
+        SharedPreferences prefs = getSharedPreferences(
+               Constants.PREFERENCES,
+                Context.MODE_PRIVATE);
+
+        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
+
+        if (registrationId.length() == 0) {
+            Log.d("[MainActivity]", "Registro GCM no encontrado.");
+            return "";
+        }
+
+        String registeredUser =
+                prefs.getString(PROPERTY_USER, "user");
+
+        int registeredVersion =
+                prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
+
+        long expirationTime =
+                prefs.getLong(PROPERTY_EXPIRATION_TIME, -1);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        String expirationDate = sdf.format(new Date(expirationTime));
+
+        Log.d("[MainActivity]", "Registro GCM encontrado (usuario=" + registeredUser +
+                ", version=" + registeredVersion +
+                ", expira=" + expirationDate + ")");
+
+        int currentVersion = getAppVersion(context);
+
+        if (registeredVersion != currentVersion) {
+            Log.d("[MainActivity]", "Nueva versión de la aplicación.");
+            return "";
+        } else if (System.currentTimeMillis() > expirationTime) {
+            Log.d("[MainActivity]", "Registro GCM expirado.");
+            return "";
+        }
+        else if (!getEmailFromAccount().equals(registeredUser) || !getEmailFromPreferences().equals(registeredUser)) {
+            Log.d("[MainActivity]", "Nuevo nombre de usuario.");
+            return "";
+        }
+
+        return registrationId;
+    }
+
+    private static int getAppVersion(Context context) {
+        try
+        {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+
+            return packageInfo.versionCode;
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+            throw new RuntimeException("Error al obtener versión: " + e);
+        }
+    }
+
+    //Para Google Cloud Message
+    //http://www.sgoliver.net/blog/notificaciones-push-android-google-cloud-messaging-gcm-implementacion-cliente-nueva-version/
+
+//    public class GCMRegister extends AsyncTask<String,Integer,String> {
+//        @Override
+//        protected String doInBackground(String... params) {
+//            String msg = "";
+//
+//            try
+//            {
+//                if (gcm == null) {
+//                    gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+//                }
+//
+//                //Nos registramos en los servidores de GCM
+//                regid = gcm.register(SENDER_ID);
+//
+//                Log.d("[MainActivity]", "Registrado en GCM: registration_id=" + regid);
+//
+//                //Nos registramos en nuestro servidor
+//                sendGCMRegisterInfo(params[0], regid);
+//
+//                //Guardamos los datos del registro
+//                setRegistrationId(getApplicationContext(), params[0], regid);
+//            }
+//            catch (IOException ex)
+//            {
+//                Log.d("[MainActivity]", "Error registro en GCM:" + ex.getMessage());
+//            }
+//
+//            return msg;
+//        }
+//
+//        private void setRegistrationId(Context context, String user, String regId) {
+//            SharedPreferences prefs = getSharedPreferences(
+//                    Constants.PREFERENCES,
+//                    Context.MODE_PRIVATE);
+//
+//            int appVersion = getAppVersion(context);
+//
+//            SharedPreferences.Editor editor = prefs.edit();
+//            editor.putString(PROPERTY_USER, user);
+//            editor.putString(PROPERTY_REG_ID, regId);
+//            editor.putInt(PROPERTY_APP_VERSION, appVersion);
+//            editor.putLong(PROPERTY_EXPIRATION_TIME,
+//                    System.currentTimeMillis() + 1000 * 3600 * 24 * 7);
+//
+//            editor.commit();
+//        }
+//
+//        private void sendGCMRegisterInfo(String user, String regId) {
+//            String version = String.valueOf(getAppVersion(getApplicationContext()));
+//            String expiration_time = String.valueOf(System.currentTimeMillis() + 1000 * 3600 * 24 * 7);
+//
+//            GCM gcm = new GCM(user, regId, version, expiration_time);
+//            new SendGCMRegisterInfo(getApplicationContext()).sendRegInfo(gcm);
+//        }
+//    }
+
+    public void showToast(String text) {
+        // Set the toast and duration
+        int toastDurationInMilliSeconds = 12000;
+        mToastToShow = Toast.makeText(this, text, Toast.LENGTH_LONG);
+
+        // Set the countdown to display the toast
+        CountDownTimer toastCountDown;
+        toastCountDown = new CountDownTimer(toastDurationInMilliSeconds, 1000 /*Tick duration*/) {
+            public void onTick(long millisUntilFinished) {
+                mToastToShow.show();
+            }
+            public void onFinish() {
+                mToastToShow.cancel();
+            }
+        };
+
+        // Show the toast and starts the countdown
+        mToastToShow.show();
+        toastCountDown.start();
     }
 }

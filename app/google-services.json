@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "357137804481",
+    "firebase_url": "https://helical-client-130014.firebaseio.com",
+    "project_id": "helical-client-130014",
+    "storage_bucket": "helical-client-130014.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357137804481:android:bcef7030aad35944",
+        "android_client_info": {
+          "package_name": "com.habitissimo.vespapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "357137804481-rb8orre2kv6cc07pvr3r9o9h7v1ih7ap.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaHIzJFfRUL8VOtBigu5HGoMUD9Y0ccHU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

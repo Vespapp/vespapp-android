@@ -12,6 +12,7 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.Touch;
@@ -118,7 +119,7 @@ public class InfoDescriptionActivity extends AppCompatActivity {
                 });
             } else {
                 Toast.makeText(getApplicationContext(), R.string.bitmap_null_sighting_view, Toast.LENGTH_SHORT).show();
-                Log.e("[SightingViewAct]", "Null bitmap, maybe you are not connected to the Internet");
+                Log.e("[SightingViewAct]", "Null bitmap, MAYBE you are not connected to the Internet");
             }
 
             // Retrieve and cache the system's default "short" animation time.
@@ -130,6 +131,7 @@ public class InfoDescriptionActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (OutOfMemoryError e) {
+            e.printStackTrace();
         }
 
     }

@@ -95,7 +95,7 @@
     <string name="tab_menu_about_secondLine">"Coneix la nostra història"</string>
     <string name="tab_menu_contributors_firstLine">Col·laboradors</string>
     <string name="tab_menu_contributors_secondLine">Ells ho han fet possible</string>
-    <string name="tab_menu_login_firstLine">Registre</string>
+    <string name="tab_menu_login_firstLine">"Adreça electrònica"</string>
     <string name="tab_menu_login_secondLine">"Ajuda'ns a trobar-te"</string>
 
     <string name="questions_activity_toast">"Gràcies per contestar les preguntes"</string>
@@ -145,10 +145,30 @@
     <string name="dialog_negative_button">"Cancel·la"</string>
 
     <string name="dialog_email_title">"Ajuda'ns"</string>
-    <string name="dialog_email_message">"Per favor, introdueix la teva adreça electrònica per que poguem contactar amb tu en cas d'EMERGENCIA."</string>
+    <string name="dialog_email_message">"Per favor, dona'ns la teva adreça electrònica per que poguem contactar amb tu en cas d'EMERGENCIA.\n\nSi ens la proporciones, podràs veure les teves deteccions i rebràs notificacions informatives quan les haguem processat."</string>
     <string name="dialog_email_positive_button">Accepta</string>
     <string name="dialog_email_negative_button">"Cancel·la"</string>
-    <string name="dialog_email_toast">"Moltes gràcies per la seva col·laboració!"</string>
+    <string name="dialog_email_toast">"Moltes gràcies!"</string>
 
-    <string name="checking_email_toast">"Per favor, registra't per que poguem contactar amb tu en cas d'EMERGENCIA"</string>
+    <string name="checking_email_toast">"Per favor, dóna'ns la teva adreça electrònica per a casos d'EMERGENCIA."</string>
+
+    <string name="notification_line_wasp">": VESPA processada com "</string>
+    <string name="notification_line_nest">": NIU processat com "</string>
+    <string name="notification_line">": processat com "</string>
+
+    <string name="notification_result_positive">POSITIU</string>
+    <string name="notification_result_negative">NEGATIU</string>
+    <string name="notification_result_unknown">DESCONEGUT</string>
+
+
+    <string name="notification_processed_sighting">"Detecció processada"</string>
+    <string name="notification_processed_sightings">" deteccions processades"</string>
+    <string name="notification_processed_wasp_nest">Vespes i nius processats</string>
+
+    <string name="permission_warning_storage_1">"Es necesita poder guardar les fotos al dispositiu para després enviar-les a la web!"</string>
+    <string name="permission_warning_storage_2">"Activi manualment el permís de EMMAGATZEMATGE per poder continuar!"</string>
+    <string name="permission_warning_storage_3">"Es necesiten permisos per poder accedir a les imatges!"</string>
+
+    <string name="loading_photo">"Carregant foto..."</string>
+    <string name="getting_sightings_list">"Obtenint dades... canvii de pestanya per actualitzar mapa"</string>
 </resources>

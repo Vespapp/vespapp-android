@@ -1,5 +1,6 @@
 package com.habitissimo.vespapp.sighting;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -15,6 +16,7 @@ import com.habitissimo.vespapp.api.VespappApiHelper;
 import com.habitissimo.vespapp.async.Task;
 import com.habitissimo.vespapp.async.TaskCallback;
 import com.habitissimo.vespapp.database.Database;
+import com.habitissimo.vespapp.database.SightingsDB;
 import com.habitissimo.vespapp.dialog.LoadingDialog;
 import com.habitissimo.vespapp.questions.Question;
 import com.habitissimo.vespapp.questions.QuestionsActivity;
@@ -35,11 +37,13 @@ public class AddNewSighting {
     private AlertDialog dialog;
 
     private Context context;
+    private Activity calling_activity;
 
 
-    public AddNewSighting(Context context) {
+    public AddNewSighting(Context context, Activity calling_activity) {
         api = Vespapp.get(context).getApi();
         this.context = context;
+        this.calling_activity = calling_activity;
     }
 
     public void sendSighting(final Sighting sighting) {
@@ -85,6 +89,7 @@ public class AddNewSighting {
     private void onSightingCreated(Sighting sighting) {
         uploadPhotosToDatabase(sighting);
         getQuestionFromDatabase(sighting);
+        saveSightingInLocalDB(sighting);
     }
 
 
@@ -148,7 +153,7 @@ public class AddNewSighting {
     }
 
     private void onPhotosUploadingError(Throwable t) {
-        Toast.makeText(context, R.string.addnewsighting_upload_photos_error, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, R.string.addnewsighting_upload_photos_error, Toast.LENGTH_SHORT).show();
         hideDialog();
     }
 
@@ -202,6 +207,11 @@ public class AddNewSighting {
 
             }
         });
+    }
+
+    private void saveSightingInLocalDB(Sighting sighting) {
+        SightingsDB sdb = new SightingsDB(calling_activity);
+        sdb.insertSighting(sighting);
     }
 
 

@@ -173,6 +173,8 @@ public class NewSightingDataActivity extends AppCompatActivity {
         //Si no hay un email guardado voluntariamente, se coge la informacion de la cuenta
         if (userEmail.equals("")) {
             userEmail = getEmailFromAccount();
+        } else {
+            userEmail += " / "+getEmailFromAccount();
         }
         sighting.setContact(userEmail);
 

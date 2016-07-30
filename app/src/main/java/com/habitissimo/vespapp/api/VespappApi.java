@@ -1,6 +1,7 @@
 package com.habitissimo.vespapp.api;
 
 import com.habitissimo.vespapp.appversion.AppVersion;
+import com.habitissimo.vespapp.gcm.GCM;
 import com.habitissimo.vespapp.info.Info;
 import com.habitissimo.vespapp.questions.Question;
 import com.habitissimo.vespapp.sighting.Location;
@@ -39,6 +40,11 @@ public interface VespappApi {
 
     @GET("appversion/")
     Call<List<AppVersion>> getAppVersion();
+
+    /* GCM--> Google Cloud Message, se envía la información de registro
+    en GCM al servidor, para poder enviar y recibir notificaciones*/
+    @POST ("gcm/")
+    Call<GCM> sendGCM(@Body GCM registerInfo);
 
     @POST("sightings/")
     Call<Sighting> createSighting(@Body Sighting sighting);

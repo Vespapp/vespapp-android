@@ -26,7 +26,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -38,7 +38,7 @@ import com.habitissimo.vespapp.map.Map;
 
 import java.io.IOException;
 
-public class NewSightingMapActivity extends AppCompatActivity implements OnMarkerDragListener {
+public class NewSightingMapActivity extends AppCompatActivity {
 
     private final static int GPS_PERMISSION = 13;
 
@@ -92,70 +92,73 @@ public class NewSightingMapActivity extends AppCompatActivity implements OnMarke
     private void sendSighting() {
         sighting.setLat((float) marker.getPosition().latitude);
         sighting.setLng((float) marker.getPosition().longitude);
-        new AddNewSighting(this).sendSighting(sighting);
+        new AddNewSighting(this, this).sendSighting(sighting);
     }
 
     private void initMap() {
-        final GoogleMap Gmap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-        if (Gmap != null) {//ANR
-            _Gmap = Gmap;
+        ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(final GoogleMap Gmap) {
+                if (Gmap != null) {//ANR
+                    _Gmap = Gmap;
 
-            int permissionCheck_Coarse_Location = ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION);
-            int permissionCheck_Fine_Location = ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION);
+                    int permissionCheck_Coarse_Location = ContextCompat.checkSelfPermission(getApplicationContext(),
+                            Manifest.permission.ACCESS_COARSE_LOCATION);
+                    int permissionCheck_Fine_Location = ContextCompat.checkSelfPermission(getApplicationContext(),
+                            Manifest.permission.ACCESS_FINE_LOCATION);
 
-            if (permissionCheck_Coarse_Location == PackageManager.PERMISSION_GRANTED &&
-                    permissionCheck_Fine_Location == PackageManager.PERMISSION_GRANTED) {
-                Gmap.setMyLocationEnabled(true);
-            }
-            else {
-                ActivityCompat.requestPermissions(activity,
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
-                        GPS_PERMISSION);
-            }
-
-
-            map = new Map(Gmap);
-
-            LatLng position = new LatLng(sighting.getLat(), sighting.getLng());
-
-            marker = Gmap.addMarker(new MarkerOptions()
-                    .position(position)
-                    .title(getString(R.string.newsightingview_marker_title))
-                    .draggable(true));
-
-            Gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
-
-            Gmap.setOnMarkerDragListener(this);
-
-            Gmap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-                @Override
-                public void onMapLongClick(LatLng position) {
-                    marker = moveMarker(Gmap, marker, position);
-                }
-            });
-
-
-            Gmap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-                @Override
-                public boolean onMyLocationButtonClick() {
-                    LatLng myPosition = getCurrentPosition();
-                    if (myPosition != null) {
-                        marker = moveMarker(Gmap, marker, myPosition);
-
-                        CameraPosition camPos = new CameraPosition.Builder().target(myPosition).zoom(14).build();
-                        CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
-
-                        Gmap.animateCamera(camUpd3);
-                        return true;
+                    if (permissionCheck_Coarse_Location == PackageManager.PERMISSION_GRANTED &&
+                            permissionCheck_Fine_Location == PackageManager.PERMISSION_GRANTED) {
+                        Gmap.setMyLocationEnabled(true);
                     }
-                    return false;
+                    else {
+                        ActivityCompat.requestPermissions(activity,
+                                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                                GPS_PERMISSION);
+                    }
+
+
+                    map = new Map(Gmap);
+
+                    LatLng position = new LatLng(sighting.getLat(), sighting.getLng());
+
+                    marker = Gmap.addMarker(new MarkerOptions()
+                            .position(position)
+                            .title(getString(R.string.newsightingview_marker_title))
+                            .draggable(true));
+
+                    Gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
+
+                    Gmap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                        @Override
+                        public void onMapLongClick(LatLng position) {
+                            marker = moveMarker(Gmap, marker, position);
+                        }
+                    });
+
+
+                    Gmap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                        @Override
+                        public boolean onMyLocationButtonClick() {
+                            LatLng myPosition = getCurrentPosition();
+                            if (myPosition != null) {
+                                marker = moveMarker(Gmap, marker, myPosition);
+
+                                CameraPosition camPos = new CameraPosition.Builder().target(myPosition).zoom(14).build();
+                                CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
+
+                                Gmap.animateCamera(camUpd3);
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+                } else {
+                    Log.e("[NewSightingMapActiv]", "Map not ready yet, Gmap = null!");
                 }
-            });
-        } else {
-            Log.e("[NewSightingMapActiv]", "Map not ready yet, Gmap = null!");
-        }
+            }
+        });
+
     }
 
     @Override
@@ -272,23 +275,6 @@ public class NewSightingMapActivity extends AppCompatActivity implements OnMarke
 
     private void showToastConnectingGPS() {
         Toast.makeText(this, R.string.newsightingview_toast_gps, Toast.LENGTH_SHORT).show();
-    }
-
-
-
-    @Override
-    public void onMarkerDragStart(Marker marker) {
-
-    }
-
-    @Override
-    public void onMarkerDrag(Marker marker) {
-
-    }
-
-    @Override
-    public void onMarkerDragEnd(Marker marker) {
-
     }
 
 }
