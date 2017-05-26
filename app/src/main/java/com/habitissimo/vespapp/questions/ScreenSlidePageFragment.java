@@ -2,6 +2,7 @@ package com.habitissimo.vespapp.questions;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,6 +56,33 @@ public class ScreenSlidePageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView;
 
+        LinearLayout rl = (LinearLayout) View.inflate(getContext(), R.layout.fragment_buttons_questions, null);
+
+        Button btn_send = new Button(getContext());
+        btn_send.setText(R.string.questions_send);
+        btn_send.setBackgroundColor(getResources().getColor(R.color.brandSecondary));
+        btn_send.setTextColor(getContext().getResources().getColor(R.color.colorTitle));
+        btn_send.setGravity(Gravity.CENTER);
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(0, 60, 0, 0);
+        btn_send.setLayoutParams(params);
+
+        Button btn_next = (Button) rl.findViewById(R.id.but_next);
+        btn_next.setText(R.string.questions_next);
+        btn_next.setBackgroundColor(getResources().getColor(R.color.brandSecondary));
+        btn_next.setTextColor(getContext().getResources().getColor(R.color.colorTitle));
+        btn_next.setGravity(Gravity.CENTER);
+
+        Button btn_prev = (Button) rl.findViewById(R.id.but_prev);
+        btn_prev.setText(R.string.questions_prev);
+        btn_prev.setBackgroundColor(getResources().getColor(R.color.brandSecondary));
+        btn_prev.setTextColor(getContext().getResources().getColor(R.color.colorTitle));
+        btn_prev.setGravity(Gravity.CENTER);
+
         if (question.isCheckBox()) {
             rootView = (ViewGroup) inflater.inflate(R.layout.fragment_multiple_answer, container, false);
             LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.layout_multiple_answer);
@@ -77,8 +105,8 @@ public class ScreenSlidePageFragment extends Fragment {
             for (final Answer answer : question.getAvailable_answers()) {
                 CheckBox checkAnswerFirst = new CheckBox(getActivity());
 
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.leftMargin = 20;
+                LinearLayout.LayoutParams params_layout = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params_layout.leftMargin = 20;
                 //Add space between button and text
                 final float scale = this.getResources().getDisplayMetrics().density;
                 checkAnswerFirst.setPadding(checkAnswerFirst.getPaddingLeft() + (int) (10.0f * scale + 0.5f),
@@ -110,22 +138,11 @@ public class ScreenSlidePageFragment extends Fragment {
                     }
                 });
 
-                ll.addView(checkAnswerFirst, params);
+                ll.addView(checkAnswerFirst, params_layout);
             }
 
             if (position == QuestionsActivity.NUM_PAGES - 1) {
-                Button btn_send = new Button(getContext());
-                btn_send.setText(R.string.questions_send);
-                btn_send.setBackgroundColor(getResources().getColor(R.color.brandSecondary));
-                btn_send.setTextColor(getContext().getResources().getColor(R.color.colorTitle));
-                btn_send.setGravity(Gravity.CENTER);
 
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-                params.setMargins(0, 60, 0, 0);
-                btn_send.setLayoutParams(params);
                 ll.addView(btn_send);
 
                 btn_send.setOnClickListener(new View.OnClickListener() {
@@ -133,6 +150,32 @@ public class ScreenSlidePageFragment extends Fragment {
                     public void onClick(View v) {
                         QuestionsActivity.updateSighting(answersMap);
                         answersMap.clear();
+                    }
+                });
+            } else if (position == 0) {
+
+                ll.addView(rl);
+
+                btn_next.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        QuestionsActivity.setPage(position+1);
+                    }
+                });
+            } else {
+
+                ll.addView(rl);
+                btn_prev.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        QuestionsActivity.setPage(position-1);
+                    }
+                });
+
+                btn_next.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        QuestionsActivity.setPage(position+1);
                     }
                 });
             }
@@ -185,27 +228,40 @@ public class ScreenSlidePageFragment extends Fragment {
             }
 
             if (position == QuestionsActivity.NUM_PAGES - 1) {
-                Button btn_send = new Button(getContext());
-                btn_send.setText(R.string.questions_send);
-                btn_send.setBackgroundColor(getResources().getColor(R.color.brandSecondary));
-                btn_send.setTextColor(getContext().getResources().getColor(R.color.colorTitle));
-                btn_send.setGravity(Gravity.CENTER);
-
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-                params.setMargins(0, 60, 0, 0);
                 btn_send.setLayoutParams(params);
 
                 rg.addView(btn_send);
-//                ll.addView(btn_send);
 
                 btn_send.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         QuestionsActivity.updateSighting(answersMap);
                         answersMap.clear();
+                    }
+                });
+            } else if (position == 0) {
+
+                ll.addView(rl);
+
+                btn_next.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        QuestionsActivity.setPage(position+1);
+                    }
+                });
+            } else {
+                ll.addView(rl);
+                btn_next.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        QuestionsActivity.setPage(position+1);
+                    }
+                });
+
+                btn_prev.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        QuestionsActivity.setPage(position-1);
                     }
                 });
             }

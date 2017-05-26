@@ -38,7 +38,7 @@ public class QuestionsActivity extends AppCompatActivity {
     public static int NUM_PAGES;
     private int currentPage = 0;
     // The pager widget, which handles animation and allows swiping horizontally to access previous and next wizard steps.
-    private ViewPager mPager;
+    private static ViewPager mPager;
     // The pager adapter, which provides the pages to the view pager widget.
     private PagerAdapter mPagerAdapter;
 
@@ -62,7 +62,7 @@ public class QuestionsActivity extends AppCompatActivity {
 
         questionsList = questionsListUnsorted;
 
-        //PARCHEEEEE
+        //Patch para ordenar correctamente las preguntas. TODO:fix en web
         if (questionsList.get(1).getId() == 9) {
             questionsList.add(questionsListUnsorted.get(1));
             questionsList.remove(1);
@@ -115,6 +115,12 @@ public class QuestionsActivity extends AppCompatActivity {
                 invalidateOptionsMenu();
             }
         });
+    }
+
+
+
+    public static void setPage(int position) {
+        mPager.setCurrentItem(position);
     }
 
 
