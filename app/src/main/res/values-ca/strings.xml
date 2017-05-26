@@ -27,6 +27,8 @@
     <string name="title_activity_menu_contact">Contacte</string>
     <string name="title_activity_menu_about_us">Quant a nosaltres</string>
     <string name="title_activity_menu_contributors">Col·laboradors</string>
+    <string name="title_activity_menu_lopd">LOPD</string>
+    <string name="title_activity_menu_help_us">"Ajuda'ns"</string>
     <string name="contributers_tittle">Col·laboradors de Vespapp</string>
 
     <string name="icon_heart">&#xf0f9;</string>
@@ -84,8 +86,11 @@
     <string name="menu_contact_message">Missatge</string>
     <string name="menu_contact_message_hint">Escriu aquí el teu missatge</string>
     <string name="menu_contact_telephone">Telèfon</string>
-    <string name="menu_contact_telephone_hint">(Opcional)</string>
+    <string name="menu_contact_telephone_hint">"El teu telèfon"</string>
     <string name="menu_contact_send">Envia</string>
+
+    <string name="menu_help_us_message_first">"Per favor, t'agrairíem que ens enviassis les teves dades personals per poder posar-nos en contacte amb tu si realitzassis un avispament positiu.\n\nSi ens la proporciones, podràs veure les teves deteccions i rebràs notificacions informatives quan les haguem processat."</string>
+    <string name="menu_help_us_button">"Accepta"</string>
 
     <string name="activity_new_sighting_map_send">Envia</string>
 
@@ -97,9 +102,13 @@
     <string name="tab_menu_contributors_secondLine">Ells ho han fet possible</string>
     <string name="tab_menu_login_firstLine">"Adreça electrònica"</string>
     <string name="tab_menu_login_secondLine">"Ajuda'ns a trobar-te"</string>
+    <string name="tab_menu_lopd_firstLine">LOPD</string>
+    <string name="tab_menu_lopd_secondLine">"Llei Orgànica de Protecció de Dades"</string>
 
     <string name="questions_activity_toast">"Gràcies per contestar les preguntes"</string>
     <string name="questions_send">Envia</string>
+    <string name="questions_next">Continua</string>
+    <string name="questions_prev">Torna</string>
 
     <string name="sightingview_tabs_photo">Fotos</string>
     <string name="sightingview_tabs_info">Info</string>
@@ -145,10 +154,22 @@
     <string name="dialog_negative_button">"Cancel·la"</string>
 
     <string name="dialog_email_title">"Ajuda'ns"</string>
-    <string name="dialog_email_message">"Per favor, dona'ns la teva adreça electrònica per que poguem contactar amb tu en cas d'EMERGENCIA.\n\nSi ens la proporciones, podràs veure les teves deteccions i rebràs notificacions informatives quan les haguem processat."</string>
-    <string name="dialog_email_positive_button">Accepta</string>
+    <string name="dialog_email_message">"Per favor, agrairíem que ens enviassis <b>totes</b> les dades personals per poder posar-nos en contacte amb tu si l\'avispament és positiu.\n\nSi ens la proporciones, podràs veure les teves deteccions i rebràs notificacions informatives quan les haguem processat."</string>
+    <string name="dialog_email_positive_button">Envia dades</string>
     <string name="dialog_email_negative_button">"Cancel·la"</string>
+    <string name="dialog_email_neutral_button">"LOPD"</string>
     <string name="dialog_email_toast">"Moltes gràcies!"</string>
+    <string name="dialog_email_toast_empty">"No ha introduït cap camp"</string>
+    <string name="dialog_email_contact_name">"Nom:"</string>
+    <string name="dialog_email_contact_mail">"Email:"</string>
+    <string name="dialog_email_contact_phone">"Telèfon:"</string>
+    <string name="dialog_email_contact_name_hint">"(El teu nom)"</string>
+    <string name="dialog_email_contact_mail_hint">"(El teu email)"</string>
+    <string name="dialog_email_contact_phone_hint">"(El teu telèfon)"</string>
+
+    <string name="dialog_location_title">Recorda</string>
+    <string name="dialog_location_message">"Per favor, és important que situïs el marcador exactament on es va realitzar l'avispament per a posibilitar la seva eliminació."</string>
+    <string name="dialog_location_positive_button">"D'acord"</string>
 
     <string name="checking_email_toast">"Per favor, dóna'ns la teva adreça electrònica per a casos d'EMERGENCIA."</string>
 
@@ -169,6 +190,14 @@
     <string name="permission_warning_storage_2">"Activi manualment el permís de EMMAGATZEMATGE per poder continuar!"</string>
     <string name="permission_warning_storage_3">"Es necesiten permisos per poder accedir a les imatges!"</string>
 
+    <string name="permission_warning_account_1">"INFO només per avispaments POSITIUS"</string>
+    <string name="permission_warning_account_2">"Activi manualment el permís de CONTACTES per ajudar-nos!"</string>
+
+    <string name="permission_warning_phone_1">"INFO només per avispaments POSITIUS"</string>
+    <string name="permission_warning_phone_2">"Activi manualment el permís de CONTACTES per ajudar-nos!"</string>
+
     <string name="loading_photo">"Carregant foto..."</string>
     <string name="getting_sightings_list">"Obtenint dades... canvii de pestanya per actualitzar mapa"</string>
+
+    <string name="lopd_text">"En compliment del que disposa la Llei Orgànica 15/1999, de 13 de desembre, de protecció de dades de caràcter personal, us informam que les dades recollides seran incloses en un o més fitxers gestionats per la UIB, la finalitat dels quals és contactar amb el responsable del avistament de la vespa asiàtica en cas de que sigui necessari per obtenir més informació del avistament. Les dades sol·licitades són necessàries per complir amb l’esmentada finalitat i, per tant, el fet de no obtenir-les impedeix aconseguir-la.\n\nLa UIB és la responsable del tractament de les dades i com a tal us garanteix els drets d’accés, rectificació, cancel·lació i oposició quant a les dades facilitades, per exercir els quals us heu d’adreçar per escrit a: Universitat de les Illes Balears, Secretaria General, a l’atenció del responsable de seguretat, fitxer de dades Vespapp, cra. de Valldemossa, km 7,5, 07122 Palma (Illes Balears). De la mateixa manera, la UIB es compromet a respectar la confidencialitat de les vostres dades i a utilitzar-les d'acord amb la finalitat dels fitxers."</string>
 </resources>

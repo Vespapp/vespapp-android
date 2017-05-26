@@ -5,6 +5,54 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout_menu_tab_login"
+        android:layout_width="fill_parent"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:padding="6dip"
+        android:layout_marginTop="10dip"
+        android:clickable="true">
+
+        <ImageView
+            android:id="@+id/iconMenu4"
+            android:layout_width="100dip"
+            android:layout_height="fill_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
+            android:contentDescription="TODO"
+            android:src="@drawable/login2" />
+
+        <TextView
+            android:id="@+id/secondLineMenu4"
+            android:layout_width="fill_parent"
+            android:layout_height="26dip"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/iconMenu4"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:text="@string/tab_menu_login_secondLine"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/firstLineMenu4"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/secondLineMenu4"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_toRightOf="@id/iconMenu4"
+            android:gravity="center_vertical"
+            android:text="@string/tab_menu_login_firstLine"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginTop="10dip"/>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/layout_menu_tab_contact"
@@ -154,7 +202,7 @@
         android:layout_marginTop="10dip"/>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/layout_menu_tab_login"
+        android:id="@+id/layout_menu_tab_lopd"
         android:layout_width="fill_parent"
         android:layout_height="?android:attr/listPreferredItemHeight"
         android:padding="6dip"
@@ -162,37 +210,37 @@
         android:clickable="true">
 
         <ImageView
-            android:id="@+id/iconMenu4"
+            android:id="@+id/iconMenu5"
             android:layout_width="100dip"
             android:layout_height="fill_parent"
             android:layout_alignParentBottom="true"
             android:layout_alignParentTop="true"
             android:contentDescription="TODO"
-            android:src="@drawable/login2" />
+            android:src="@drawable/lopd" />
 
         <TextView
-            android:id="@+id/secondLineMenu4"
+            android:id="@+id/secondLineMenu5"
             android:layout_width="fill_parent"
             android:layout_height="26dip"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_toRightOf="@id/iconMenu4"
+            android:layout_toRightOf="@id/iconMenu5"
             android:ellipsize="marquee"
             android:singleLine="true"
-            android:text="@string/tab_menu_login_secondLine"
+            android:text="@string/tab_menu_lopd_secondLine"
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/firstLineMenu4"
+            android:id="@+id/firstLineMenu5"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@id/secondLineMenu4"
+            android:layout_above="@id/secondLineMenu5"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_alignWithParentIfMissing="true"
-            android:layout_toRightOf="@id/iconMenu4"
+            android:layout_toRightOf="@id/iconMenu5"
             android:gravity="center_vertical"
-            android:text="@string/tab_menu_login_firstLine"
+            android:text="@string/tab_menu_lopd_firstLine"
             android:textSize="16sp" />
     </RelativeLayout>
 

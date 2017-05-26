@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_menu_help_us"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:background="@color/brandPrimary">
+    </android.support.v7.widget.Toolbar>
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/menu_help_us"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="30dp"
+            android:focusableInTouchMode="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:text="@string/dialog_email_message"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/dialog_email_contact_name"
+                android:paddingLeft="15sp"
+                android:paddingTop="20sp"/>
+            <EditText
+                android:id="@+id/editText_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:backgroundTint="@color/brandPrimaryDark"
+                android:padding="20sp"
+                android:hint="@string/dialog_email_contact_name_hint"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/dialog_email_contact_mail"
+                android:paddingLeft="15sp"
+                android:paddingTop="10sp"/>
+            <EditText
+                android:id="@+id/editText_mail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:backgroundTint="@color/brandPrimaryDark"
+                android:padding="20sp"
+                android:hint="@string/dialog_email_contact_mail_hint"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/dialog_email_contact_phone"
+                android:paddingLeft="15sp"
+                android:paddingTop="10sp"/>
+            <EditText
+                android:id="@+id/editText_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:padding="20sp"
+                android:backgroundTint="@color/brandPrimaryDark"
+                android:hint="@string/dialog_email_contact_phone_hint"/>
+
+            <Button
+                android:id="@+id/save_info_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/menu_help_us_button"
+                android:layout_gravity="right"
+                android:background="@color/brandSecondary"
+                android:textColor="@color/colorTitle"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="15dp"
+                android:onClick="selfDestruct"
+                />
+
+            <TextView
+                android:paddingTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/lopd_text"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

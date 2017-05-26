@@ -27,6 +27,8 @@
     <string name="title_activity_menu_contact">Contacto</string>
     <string name="title_activity_menu_about_us">Acerca de nosotros</string>
     <string name="title_activity_menu_contributors">Colaboradores</string>
+    <string name="title_activity_menu_lopd">LOPD</string>
+    <string name="title_activity_menu_help_us">"Ayúdanos"</string>
     <string name="contributers_tittle">Colaboradores de Vespapp</string>
 
     <string name="icon_heart">&#xf0f9;</string>
@@ -87,8 +89,11 @@
     <string name="menu_contact_message">Mensaje</string>
     <string name="menu_contact_message_hint">Escribe aquí tu mensaje</string>
     <string name="menu_contact_telephone">Teléfono</string>
-    <string name="menu_contact_telephone_hint">(Opcional)</string>
+    <string name="menu_contact_telephone_hint">"Tu teléfono"</string>
     <string name="menu_contact_send">Enviar</string>
+
+    <string name="menu_help_us_message_first">"Por favor, te agradeceríamos que nos enviaras tus datos personales para poder ponernos en contacto contigo si realizaras un avispamiento positivo.\n\nSi nos lo proporcionas, podrás ver tus avispamientos y recibirás notificaciones informativas cuando las hayamos procesado."</string>
+    <string name="menu_help_us_button">"Aceptar"</string>
 
     <string name="activity_new_sighting_map_send">Enviar</string>
 
@@ -100,10 +105,14 @@
     <string name="tab_menu_contributors_secondLine">Ellos lo han hecho posible</string>
     <string name="tab_menu_login_firstLine">Correo electrónico</string>
     <string name="tab_menu_login_secondLine">Ayúdanos a encontrarte</string>
+    <string name="tab_menu_lopd_firstLine">LOPD</string>
+    <string name="tab_menu_lopd_secondLine">Ley Orgánica de Protección de Datos</string>
 
 
     <string name="questions_activity_toast">Gracias por contestar las preguntas</string>
     <string name="questions_send">Enviar</string>
+    <string name="questions_next">Siguiente</string>
+    <string name="questions_prev">"Atrás"</string>
 
     <string name="sightingview_tabs_photo">Fotos</string>
     <string name="sightingview_tabs_info">Info</string>
@@ -149,12 +158,22 @@
     <string name="dialog_version_negative_button">Cancelar</string>
 
     <string name="dialog_email_title">Ayúdanos</string>
-    <string name="dialog_email_message">"Por favor, danos un correo electrónico para que podamos contactar contigo en caso de EMERGENCIA.\n\nSi nos lo proporcionas, podrás ver tus avispamientos y recibirás notificaciones informativas cuando las hayamos procesado."</string>
-    <string name="dialog_email_positive_button">Aceptar</string>
+    <string name="dialog_email_message">"Por favor, te agradeceríamos que nos enviaras <b>todos</b> los siguientes datos personales para poder ponernos en contacto contigo si el avispamento es positivo.\n\nSi nos lo proporcionas, podrás ver tus avispamientos y recibirás notificaciones informativas cuando las hayamos procesado."</string>
+    <string name="dialog_email_positive_button">Enviar datos</string>
     <string name="dialog_email_negative_button">Cancelar</string>
+    <string name="dialog_email_neutral_button">"LOPD"</string>
     <string name="dialog_email_toast">¡Muchas gracias!</string>
+    <string name="dialog_email_toast_empty">"No ha introducido ningún campo"</string>
+    <string name="dialog_email_contact_name">"Nombre:"</string>
+    <string name="dialog_email_contact_mail">"Email:"</string>
+    <string name="dialog_email_contact_phone">"Teléfono:"</string>
+    <string name="dialog_email_contact_name_hint">"(Tu nombre)"</string>
+    <string name="dialog_email_contact_mail_hint">"(Tu email)"</string>
+    <string name="dialog_email_contact_phone_hint">"(Tu teléfono)"</string>
 
-    <string name="checking_email_toast">"Por favor, danos un correo electrónico para casos de EMERGENCIA."</string>
+    <string name="dialog_location_title">Recuerda</string>
+    <string name="dialog_location_message">"Por favor, es importante que sitúes el marcador exactamente donde se realizó el avispamiento para posibilitar su eliminación."</string>
+    <string name="dialog_location_positive_button">Aceptar</string>
 
     <string name="notification_line_wasp">": AVISPA procesada como "</string>
     <string name="notification_line_nest">": NIDO procesado como "</string>
@@ -172,6 +191,15 @@
     <string name="permission_warning_storage_2">"¡Active manualmente el permiso de ALMACENAMIENTO para poder continuar!"</string>
     <string name="permission_warning_storage_3">"¡Se necesitan permisos para poder acceder a las imágenes!"</string>
 
+    <string name="permission_warning_account_1">"INFO solo para avispamientos POSITIVOS"</string>
+    <string name="permission_warning_account_2">"¡Active manualmente el permiso de CONTACTOS para ayudarnos!"</string>
+
+    <string name="permission_warning_phone_1">"INFO solo para avispamientos POSITIVOS"</string>
+    <string name="permission_warning_phone_2">"¡Active manualmente el permiso de TELEFONO para ayudarnos!"</string>
+
     <string name="loading_photo">"Cargando foto..."</string>
     <string name="getting_sightings_list">"Obteniendo datos... cambie de pestaña para actualizar mapa"</string>
+
+    <string name="lopd_text">En cumplimiento de lo dispuesto en la Ley Orgánica 15/1999, de 13 de diciembre, de protección de datos de carácter personal, se le informa que los datos recogidos serán incluidos en uno o más ficheros gestionados por la UIB, la finalidad es contactar con el responsable del avistamiento de la avispa asiática en caso de que sea necesario para obtener más información del avistamiento. Los datos solicitados son necesarios para cumplir con dicha finalidad y, por tanto, el hecho de no obtenerlos impide conseguirla.\n\nLa UIB es la responsable del tratamiento de los datos y como tal le garantiza los derechos de acceso, rectificación, cancelación y oposición de los datos facilitados, para ejercer los que debe dirigirse por escrito a: Universidad de las Islas Baleares, Secretaría General, a la atención del responsable de seguridad, archivo de datos Vespapp, cra. de Valldemossa, km 7,5, 07122 Palma (Islas Baleares). Del mismo modo, la UIB se compromete a respetar la confidencialidad de sus datos y utilizarlas de acuerdo con la finalidad de los ficheros</string>
+
 </resources>
