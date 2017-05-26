@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <permission android:name="com.habitissimo.vespapp.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
     <uses-permission android:name="com.habitissimo.vespapp.permission.C2D_MESSAGE" />
@@ -94,6 +95,16 @@
         <activity
             android:name=".menu.ContributorsActivity"
             android:label="@string/title_activity_menu_contact"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".menu.LOPDActivity"
+            android:label="@string/title_activity_menu_lopd"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".menu.HelpUsActivity"
+            android:label="@string/title_activity_menu_help_us"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 

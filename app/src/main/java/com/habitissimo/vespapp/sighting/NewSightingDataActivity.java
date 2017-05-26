@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.habitissimo.vespapp.Constants;
 import com.habitissimo.vespapp.R;
 import com.habitissimo.vespapp.database.Database;
+import com.habitissimo.vespapp.database.StringPreference;
 import com.habitissimo.vespapp.dialog.EmailDialog;
 
 import java.io.File;
@@ -54,37 +55,30 @@ public class NewSightingDataActivity extends AppCompatActivity {
     }
 
     private void checkEmailsAndWarn() {
-        if (!checkIfEmailRegistered()) {
-            Log.d("[NewSightingData]", "Email not registered, account = " + getEmailFromAccount() +
-                    ", preferences = "+getEmailFromPreferences());
-            SharedPreferences prefs =
-                    getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE);
+        if (!checkIfUserRegistered()) {
+            Log.d("[NewSightingData]", "User not registered, account = " + getEmailFromAccount() +
+                    ", preferences = "+getKeyFromPreferences("email"));
 
-            boolean already_checked = prefs.getBoolean("checked", false);
-
-            if (!already_checked) {
-                EmailDialog newFragment = EmailDialog.newInstance();
+            EmailDialog newFragment = EmailDialog.getInstance();
+            if (!newFragment.isAdded()) {
                 newFragment.show(getSupportFragmentManager(), "emailDialog2");
-
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean("checked", true);
-                editor.commit();
-            } else {
-                Toast.makeText(getApplicationContext(), getString(R.string.checking_email_toast),
-                        Toast.LENGTH_LONG).show();
             }
-
         } else {
-            Log.d("[NewSightingData]", "Email already registered");
+            Log.d("[NewSightingData]", "User already registered");
         }
     }
-    private boolean checkIfEmailRegistered() {
+    private boolean checkIfUserRegistered() {
 
-        if (!getEmailFromPreferences().equals(""))
-            return true;
+        SharedPreferences prefs =
+                getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE);
 
-        if (!getEmailFromAccount().equals(""))
+        String email = prefs.getString("email", "");
+        String name = prefs.getString("name","");
+        String phone = prefs.getString("phone", "");
+
+        if (!email.equals("") && !name.equals("") && !phone.equals("")) {
             return true;
+        }
 
         return false;
     }
@@ -169,7 +163,10 @@ public class NewSightingDataActivity extends AppCompatActivity {
     private void onTypeOfSightPressed(int type) {
         Sighting sighting = new Sighting();
         sighting.setType(type);
-        String userEmail = getEmailFromPreferences();
+        String userName = getKeyFromPreferences("name");
+        String userPhone = getKeyFromPreferences("phone");
+        String userEmail = getKeyFromPreferences("email");
+        String permission = getKeyFromPreferences("permission");
         //Si no hay un email guardado voluntariamente, se coge la informacion de la cuenta
         if (userEmail.equals("")) {
             userEmail = getEmailFromAccount();
@@ -178,7 +175,16 @@ public class NewSightingDataActivity extends AppCompatActivity {
         }
         sighting.setContact(userEmail);
 
-       // sighting.set_valid(null);
+        if (permission.equals("yes")) {
+            sighting.setContact_name(userName);
+            if (userPhone.equals(""))
+                sighting.setContact_phone(Long.valueOf(0));
+            else
+                sighting.setContact_phone(Long.valueOf(userPhone));
+        } else {
+            sighting.setContact_phone(Long.valueOf(0));
+            sighting.setContact_name("");
+        }
 
         Intent i = new Intent(this, NewSightingLocationsActivity.class);
         i.putExtra("sightingObject", sighting);
@@ -196,13 +202,12 @@ public class NewSightingDataActivity extends AppCompatActivity {
         return "";
     }
 
-    private String getEmailFromPreferences() {
+    private String getKeyFromPreferences(String key) {
         SharedPreferences prefs =
                 getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE);
 
-        return prefs.getString("email", "");
+        return prefs.getString(key, "");
     }
-
 
     private PicturesActions getPicturesList() {
         return Database.get(this).load(Constants.PICTURES_LIST, PicturesActions.class);
@@ -258,4 +263,13 @@ public class NewSightingDataActivity extends AppCompatActivity {
             rcAdapter.addPhoto(picturePath);
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("[NewSightingData]","onResume");
+
+        checkEmailsAndWarn();
+    }
+
 }

@@ -153,7 +153,7 @@ public class AddNewSighting {
     }
 
     private void onPhotosUploadingError(Throwable t) {
-//        Toast.makeText(context, R.string.addnewsighting_upload_photos_error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, R.string.addnewsighting_upload_photos_error, Toast.LENGTH_SHORT).show();
         hideDialog();
     }
 

@@ -26,6 +26,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -51,7 +52,6 @@ import com.habitissimo.vespapp.async.Task;
 import com.habitissimo.vespapp.async.TaskCallback;
 import com.habitissimo.vespapp.database.Database;
 import com.habitissimo.vespapp.database.SightingsDB;
-import com.habitissimo.vespapp.dialog.EmailDialog;
 import com.habitissimo.vespapp.dialog.VersionDialog;
 import com.habitissimo.vespapp.info.Info;
 import com.habitissimo.vespapp.info.InfoDescriptionActivity;
@@ -59,6 +59,8 @@ import com.habitissimo.vespapp.map.Map;
 import com.habitissimo.vespapp.menu.ContributorsActivity;
 import com.habitissimo.vespapp.menu.AboutUsActivity;
 import com.habitissimo.vespapp.menu.ContactActivity;
+import com.habitissimo.vespapp.menu.HelpUsActivity;
+import com.habitissimo.vespapp.menu.LOPDActivity;
 import com.habitissimo.vespapp.sighting.PicturesActions;
 import com.habitissimo.vespapp.sighting.Sighting;
 import com.habitissimo.vespapp.sighting.NewSightingDataActivity;
@@ -82,6 +84,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static java.security.AccessController.getContext;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -92,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 11;
     private static final int WRITE_EXTERNAL_STORAGE_AND_CAMERA_PERMISSION = 12;
     private static final int GET_ACCOUNT_PERMISSION = 13;
+    private static final int READ_PHONE_PERMISSION = 14;
 
     private static final int TAKE_CAPTURE_REQUEST = 0;
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -121,6 +126,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         activity = this;
+
+        SharedPreferences prefs =
+                getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE);
+
+        String email = prefs.getString("email", getEmailFromAccount());
+//        String phone = prefs.getString("phone",getPhoneNumber());
 
 //        setupGCM();
         checkAppVersion();
@@ -184,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (ifEmailRegistered())
+        if (ifUserRegistered())
             showNotifications(sightings);
     }
 
@@ -528,36 +539,61 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return;
             case GET_ACCOUNT_PERMISSION:
-                //Al no pedir permiso oficialmente, nunca se ejecuta este trozo de codigo
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
-                    Account[] accounts = AccountManager.get(getApplicationContext()).getAccounts();
-                    for (Account account : accounts) {
-                        if (emailPattern.matcher(account.name).matches()) {
-                            SharedPreferences prefs =
-                                    getSharedPreferences(Constants.PREFERENCES,Context.MODE_PRIVATE);
+                    SharedPreferences prefs =
+                            getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE);
 
-                            SharedPreferences.Editor editor = prefs.edit();
-                            editor.putString("email", account.name);
-                            editor.commit();
-                        }
+                    String email = prefs.getString("email", getEmailFromAccount());
+                    if (!email.equals("")) {
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("email", email);
+                        editor.commit();
                     }
 
-                } else if (grantResults[0] == PackageManager.PERMISSION_DENIED){
-                    Log.d("[MainActivity]","Permission to get email from account not granted");
+                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED){
+                    Log.d("[MainActivity]","Permission to get user information not granted");
                     // Should we show an explanation?
                     if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.GET_ACCOUNTS)) {
                         //Show permission explanation dialog...
-
-                        /*TODO NOTA: Lo normal sería mostrar diálogos insistiendo en obtener su email, pero como ya se lo
-                        preguntamos en varias ocasiones, no insistiremos por este lado */
-
+                        showToast(getString(R.string.permission_warning_account_1));
                     } else {
                         //Never ask again selected, or device policy prohibits the app from having that permission.
                         //So, disable that feature, or fall back to another situation...
+                        showToast(getString(R.string.permission_warning_storage_2));
+                    }
 
+                }
+                return;
+            case READ_PHONE_PERMISSION:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Log.d("[MainActivity]"," READ_PHONE_Phone permission granted");
+
+                    TelephonyManager tMgr = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
+                    String mPhoneNumber = tMgr.getLine1Number();
+                    if (mPhoneNumber == null)
+                        mPhoneNumber = "";
+                    else {
+                        SharedPreferences prefs =
+                                getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("phone", mPhoneNumber);
+                        editor.commit();
+                    }
+
+                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED){
+                    Log.d("[MainActivity]","Permission to write to external storage not granted");
+                    // Should we show an explanation?
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_PHONE_STATE)) {
+                        //Show permission explanation dialog...
+                        Toast.makeText(getApplicationContext(), getString(R.string.permission_warning_storage_1), Toast.LENGTH_LONG);
+                    } else {
+                        //Never ask again selected, or device policy prohibits the app from having that permission.
+                        //So, disable that feature, or fall back to another situation...
+                        Toast.makeText(getApplicationContext(), getString(R.string.permission_warning_storage_2), Toast.LENGTH_LONG);
                     }
                 }
                 return;
@@ -590,19 +626,29 @@ public class MainActivity extends AppCompatActivity {
         ((RelativeLayout) findViewById(R.id.layout_menu_tab_login)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EmailDialog newFragment = EmailDialog.newInstance();
-                newFragment.show(getSupportFragmentManager(), "emailDialog");
+                Intent i = new Intent(getApplicationContext(), HelpUsActivity.class);
+                startActivity(i);
+            }
+        });
+        ((RelativeLayout) findViewById(R.id.layout_menu_tab_lopd)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), LOPDActivity.class);
+                startActivity(i);
             }
         });
     }
 
-    private boolean ifEmailRegistered() {
+    private boolean ifUserRegistered() {
 
-        if (!getEmailFromPreferences().equals("")) {
-            return true;
-        }
+        SharedPreferences prefs =
+                getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE);
 
-        if (!getEmailFromAccount().equals("")) {
+        String email = prefs.getString("email", "");
+        String name = prefs.getString("name","");
+        String phone = prefs.getString("phone", "");
+
+        if (!email.equals("") && !name.equals("") && !phone.equals("")) {
             return true;
         }
 
@@ -610,44 +656,60 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String getEmailFromAccount() {
-
-        //Vale, aquí hay un pequeño conflicto moral:
-
-        //Si alguien se instala por primera vez la app puede recibir un sinfín de peticiones de permisos
-        //por cortesía de Google. Así que al final se ha decidido por ser lo más éticamente correcto
-        //y solo se insiste suavemente en obtener un email cuando se va a hacer un avispamiento
-        //en lugar de hacer peticiones a saco bastante impersonales. Si nos lo quieren dar, de lujo.
-
-        //Por si acaso ya tenemos permiso por algún motivo, obtenemos el email. Si no, nada.
-        //Ya lo pediremos amablemente más tarde.
+        Log.d("[MainActivity]","gettinEmailFromAccount");
         int permissionCheck_Accounts = ContextCompat.checkSelfPermission(getApplicationContext(),
                 Manifest.permission.GET_ACCOUNTS);
         if (permissionCheck_Accounts == PackageManager.PERMISSION_GRANTED) {
-
+            Log.d("[MainActivity]","Email Permission Granted");
             Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
             Account[] accounts = AccountManager.get(getApplicationContext()).getAccounts();
             for (Account account : accounts) {
                 if (emailPattern.matcher(account.name).matches()) {
+                    Log.e("[MAIN]","Email = "+account.name);
                     return account.name;
                 }
             }
         }
-//        else {
-//
-//            showToast("Solo accederemos a tu correo electrónico para contactarte en caso de EMERGENCIA");
-//            ActivityCompat.requestPermissions(activity,
-//                    new String[]{Manifest.permission.GET_ACCOUNTS},
-//                    GET_ACCOUNT_PERMISSION);
-//        }
+        else {
+            Log.d("[MainActivity]","Email Permission Not Granted");
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
+                    Manifest.permission.GET_ACCOUNTS)) {
+
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.GET_ACCOUNTS},
+                        GET_ACCOUNT_PERMISSION);
+
+                Log.d("[MainActivity]","Email Permission ASKED");
+            } else {
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.GET_ACCOUNTS},
+                        GET_ACCOUNT_PERMISSION);
+            }
+        }
 
         return "";
     }
 
-    private String getEmailFromPreferences() {
-        SharedPreferences prefs =
-                getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE);
+    private String getPhoneNumber() {
+        Log.d("[MainActivity]","getPhoneNumber");
+        int permissionCheck_Phone = ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.READ_PHONE_STATE);
 
-        return prefs.getString("email", "");
+        String mPhoneNumber = "";
+        if (permissionCheck_Phone == PackageManager.PERMISSION_GRANTED) {
+            Log.d("[MainActivity]","Phone permission granted");
+            TelephonyManager tMgr = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+            mPhoneNumber = tMgr.getLine1Number();
+            Log.d("[MainActivity]","MyPhone = " + mPhoneNumber);
+            if (mPhoneNumber == null)
+                return "";
+        } else {
+            Log.d("[MainActivity]","Phone permission NOT granted");
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.READ_PHONE_STATE},
+                    READ_PHONE_PERMISSION);
+        }
+        return mPhoneNumber;
     }
 
     private void initSelectPicturesBtn() {
@@ -679,10 +741,6 @@ public class MainActivity extends AppCompatActivity {
                         ActivityCompat.requestPermissions(activity,
                                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                 WRITE_EXTERNAL_STORAGE_AND_CAMERA_PERMISSION);
-
-//                        ActivityCompat.requestPermissions(activity,
-//                                new String[]{Manifest.permission.CAMERA},
-//                                WRITE_EXTERNAL_STORAGE_AND_CAMERA_PERMISSION);
 
                     }
                 }
@@ -838,7 +896,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     relation.put(marker.getId(), sighting);
                 }
-                if (ifEmailRegistered()) {
+                if (ifUserRegistered()) {
                     for (int i = 0; i < localSights.size(); ++i) {
                         if (String.valueOf(sighting.getId()).equals(localSights.get(i))) {
                             LatLng myLocation = new LatLng(sighting.getLat(), sighting.getLng());
@@ -1029,7 +1087,8 @@ public class MainActivity extends AppCompatActivity {
             Log.d("[MainActivity]", "Registro GCM expirado.");
             return "";
         }
-        else if (!getEmailFromAccount().equals(registeredUser) || !getEmailFromPreferences().equals(registeredUser)) {
+        else if (!getEmailFromAccount().equals(registeredUser) ) {
+//                || !getEmailFromPreferences().equals(registeredUser)) {
             Log.d("[MainActivity]", "Nuevo nombre de usuario.");
             return "";
         }

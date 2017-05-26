@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.habitissimo.vespapp.R;
 import com.habitissimo.vespapp.dialog.LoadingDialog;
+import com.habitissimo.vespapp.dialog.LocationDialog;
 import com.habitissimo.vespapp.map.Map;
 
 import java.io.IOException;
@@ -57,6 +58,9 @@ public class NewSightingMapActivity extends AppCompatActivity {
         activity = this;
 
         initToolbar();
+
+        LocationDialog newFragment = LocationDialog.newInstance();
+        newFragment.show(getSupportFragmentManager(), "locationDialog");
 
         Intent i = getIntent();
         sighting = (Sighting) i.getSerializableExtra("sightingObject");

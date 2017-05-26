@@ -24,6 +24,8 @@ public class Sighting implements Serializable {
     private int type;
     private String contact;
     private String created_at;
+    private String contact_name;
+    private long contact_phone;
 
     private String source = "app";
 
@@ -45,7 +47,7 @@ public class Sighting implements Serializable {
 
     public Sighting(int id, int status, String free_text, int type,
                     String contact, String source, boolean _public, boolean is_valid,
-                    int location, float lat, float lng) {
+                    int location, float lat, float lng, String contact_name, long contact_phone) {
         this.id = id;
         this.status = status;
         this.free_text = free_text;
@@ -57,6 +59,9 @@ public class Sighting implements Serializable {
         this.location = location;
         this.lat = lat;
         this.lng = lng;
+
+        this.contact_name = contact_name;
+        this.contact_phone = contact_phone;
     }
 
     public int getId() {
@@ -77,6 +82,14 @@ public class Sighting implements Serializable {
 
     public String getContact() {
         return contact;
+    }
+
+    public String getContact_name() {
+        return contact_name;
+    }
+
+    public long getContact_phone() {
+        return contact_phone;
     }
 
     public String getSource() {
@@ -171,4 +184,11 @@ public class Sighting implements Serializable {
         this.created_at = created_at;
     }
 
+    public void setContact_name(String contact_name) {
+        this.contact_name = contact_name;
+    }
+
+    public void setContact_phone(long contact_phone) {
+        this.contact_phone = contact_phone;
+    }
 }

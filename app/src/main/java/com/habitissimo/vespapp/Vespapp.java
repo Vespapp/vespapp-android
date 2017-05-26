@@ -15,6 +15,8 @@ import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.Listener;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.Retrofit.Builder;
@@ -57,6 +59,8 @@ public class Vespapp extends Application {
         gson = new Gson();
         database = new Database(this, gson);
         httpClient = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
                 .build();
         Picasso.setSingletonInstance(new Picasso.Builder(this)
                 .listener(new Listener() {
