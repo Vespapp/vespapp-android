@@ -32,14 +32,14 @@ public class VersionDialog extends DialogFragment {
                 new AlertDialog.Builder(getActivity());
 
         builder.setMessage(message)
-                .setTitle(getString(R.string.dialog_title))
-                .setPositiveButton(getString(R.string.dialog_positive_button), new DialogInterface.OnClickListener() {
+                .setTitle(getString(R.string.dialog_version_title))
+                .setPositiveButton(getString(R.string.dialog_version_positive_button), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.link_to_play_store)));
                         startActivity(intent);
                     }
                 })
-                .setNegativeButton(getString(R.string.dialog_negative_button), new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.dialog_version_negative_button), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

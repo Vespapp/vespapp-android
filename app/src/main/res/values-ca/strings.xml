@@ -149,9 +149,9 @@
     <string name="link_to_play_store">https://play.google.com/store/apps/details?id=com.habitissimo.vespapp&amp;hl=ca</string>
     <string name="link_to_sign_in">http://vespapp.uib.es/signup/</string>
 
-    <string name="dialog_title">"Actualització disponible"</string>
-    <string name="dialog_positive_button">"Vés a Play Store"</string>
-    <string name="dialog_negative_button">"Cancel·la"</string>
+    <string name="dialog_version_title">"Actualització disponible"</string>
+    <string name="dialog_version_positive_button">"Vés a Play Store"</string>
+    <string name="dialog_version_negative_button">"Cancel·la"</string>
 
     <string name="dialog_email_title">"Ajuda'ns"</string>
     <string name="dialog_email_message">"Per favor, agrairíem que ens enviassis <b>totes</b> les dades personals per poder posar-nos en contacte amb tu si l\'avispament és positiu.\n\nSi ens la proporciones, podràs veure les teves deteccions i rebràs notificacions informatives quan les haguem processat."</string>
@@ -170,8 +170,6 @@
     <string name="dialog_location_title">Recorda</string>
     <string name="dialog_location_message">"Per favor, és important que situïs el marcador exactament on es va realitzar l'avispament per a posibilitar la seva eliminació."</string>
     <string name="dialog_location_positive_button">"D'acord"</string>
-
-    <string name="checking_email_toast">"Per favor, dóna'ns la teva adreça electrònica per a casos d'EMERGENCIA."</string>
 
     <string name="notification_line_wasp">": VESPA processada com "</string>
     <string name="notification_line_nest">": NIU processat com "</string>

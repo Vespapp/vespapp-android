@@ -149,9 +149,9 @@
     <string name="link_to_play_store">https://play.google.com/store/apps/details?id=com.habitissimo.vespapp&amp;hl=es</string>
     <string name="link_to_sign_in">http://vespapp.uib.es/signup/</string>
 
-    <string name="dialog_title">Actualización disponible</string>
-    <string name="dialog_positive_button">Ir a Play Store</string>
-    <string name="dialog_negative_button">Cancelar</string>
+    <string name="dialog_version_title">Actualización disponible</string>
+    <string name="dialog_version_positive_button">Ir a Play Store</string>
+    <string name="dialog_version_negative_button">Cancelar</string>
 
     <string name="dialog_email_title">Ayúdanos</string>
     <string name="dialog_email_message">"Por favor, te agradeceríamos que nos enviaras <b>todos</b> los siguientes datos personales para poder ponernos en contacto contigo si el avispamento es positivo.\n\nSi nos lo proporcionas, podrás ver tus avispamientos y recibirás notificaciones informativas cuando las hayamos procesado."</string>
